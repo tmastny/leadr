@@ -1,0 +1,26 @@
+Package: leadr
+Type: Package
+Title: Personal Leaderboards for Machine Learning
+Version: 0.1.0
+Author: Timothy Mastny
+Maintainer: <tim.mastny@gmail.com>
+Description: leadr tracks all the machine learning models you make
+    on a personal leaderboard. It saves the model, or the model specific
+    so you can easily replicate your results. leadr also provides
+    additional tools to streamline modeling building and organization.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Suggests: 
+    testthat,
+    randomForest
+Imports: 
+    dplyr,
+    caret,
+    usethis,
+    tibble,
+    readr,
+    magrittr,
+    purrr
+Remotes: tidyverse/magrittr
+RoxygenNote: 6.0.1.9000
