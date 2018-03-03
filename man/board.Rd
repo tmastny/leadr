@@ -4,33 +4,53 @@
 \alias{board}
 \title{A tibble leaderboard for \code{caret} \code{train} objects}
 \usage{
-board(model = NULL, spec = NULL, path = NULL, level = "one",
-  save = TRUE)
+board(model = NULL, path = NULL, dir = NULL, save = TRUE,
+  quiet = FALSE)
 }
 \arguments{
-\item{model}{model to add to the leaderboard. The default \code{null}
-means \code{leadr::board} just returns the leaderboard tibble.}
+\item{model}{model to add to the leaderboard. If no model is supplied
+(the default \code{null}), \code{board} returns the leaderboard tibble
+for the project.}
 
 \item{path}{globally sets the path to save models and leaderboards. By
-default, the path is the project directory.}
+default, the path is the project directory found by \code{usethis::proj_get()}.}
 
-\item{level}{name of directory that contains saved models and leaderboards.
-This will be a subdirectory of the specified path. The default is \code{level}
-is \code{one} which gives a directory name \code{/level_one/}.}
+\item{dir}{globally sets name of directory where models are saved.
+This will be a subdirectory of the specified path. The default directory
+is named \code{/models_one}. If no argument is supplied, the model will be saved
+in the previously specified directory. See the example below.}
+
+\item{save}{whether \code{board} should save the supplied model to \code{dir}. If
+\code{FALSE} the model will not be saved, but will be added to the leaderboard.}
+
+\item{quiet}{whether \code{board} should return the leaderboard tibble to the console.
+By default \code{quiet = FALSE} means that the tibble prints to console.
+\code{quiet = TRUE} is useful in a \code{.Rmd} environment, where you want to add
+the model to the leaderboard without printing the tibble.}
 }
 \value{
-\code{tibble} containing the most updated leaderboard.
+\code{tibble} containing the most up-to-date leaderboard.
 }
 \description{
-This function (called as \code{leadr::board}) returns and possibly
-updates the model leaderboard for the project.
+This function (often called as \code{leadr::board}) updates and returns
+the model leaderboard for the project.
 }
 \examples{
 # add caret model to leaderboard
-# model <- train(...)
+# model saved to "/models_one"
+model <- train(...)
 leadr::board(model)
 
-# to return tibble leaderboard
+# return tibble leaderboard
 leadr::board()
+
+# save to different directory
+ensemble <- train(...)
+leadr::board(ensemble, dir = "ensembles_one")
+
+# board automatically saves to previous directory
+# model saved to "/ensembles_one"
+ensemble2 <- train(...)
+leadr::board(ensembles2)
 
 }

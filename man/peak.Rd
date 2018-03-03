@@ -7,13 +7,13 @@
 peak(leadrboard, num)
 }
 \arguments{
-\item{leadrboard}{leadrboard tibble returned by \code{\link{board}}}
+\item{leadrboard}{leaderboard tibble returned by \code{\link{board}}}
 
 \item{num}{the number of the model. See \code{\link{last_model}} to easily
 specify model number.}
 }
 \value{
-A filtered leadrboard tibble with only 9 rows, centerd around the
+A filtered leaderboard tibble with only 9 rows, centerd around the
 supplied model number.
 }
 \description{

@@ -1,11 +1,12 @@
-context("level one models")
+context("board")
 
 library(caret)
 
 test_that("Model is saved to directory", {
   skip_if_not_installed('randomForest')
 
-  unlink("../../level_one/", recursive = TRUE)
+  unlink("../../models_one/", recursive = TRUE)
+  unlink("../../leadrboard.RDS")
 
   folds <- 5
   seeds <- caret_seed(k_fold = folds)
@@ -28,8 +29,8 @@ test_that("Model is saved to directory", {
 
   leadr::board(model)
 
-  expect_true(file.exists('../../level_one/leadrboard.RDS'))
-  expect_true(file.exists('../../level_one/model1.RDS'))
+  expect_true(file.exists('../../leadrboard.RDS'))
+  expect_true(file.exists('../../models_one/model1.RDS'))
 })
 
 test_that("Next model", {
@@ -54,8 +55,8 @@ test_that("Next model", {
 
   leadr::board(model)
 
-  expect_true(file.exists('../../level_one/leadrboard.RDS'))
-  expect_true(file.exists('../../level_one/model1.RDS'))
+  expect_true(file.exists('../../leadrboard.RDS'))
+  expect_true(file.exists('../../models_one/model2.RDS'))
 })
 
 

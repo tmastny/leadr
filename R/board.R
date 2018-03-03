@@ -1,67 +1,100 @@
-# package global
-.globals <- new.env(parent = emptyenv())
-.globals$path <- NULL
-
 #' A tibble leaderboard for \code{caret} \code{train} objects
 #'
-#' This function (called as \code{leadr::board}) returns and possibly
-#' updates the model leaderboard for the project.
+#' This function (often called as \code{leadr::board}) updates and returns
+#' the model leaderboard for the project.
 #'
-#' @param model model to add to the leaderboard. The default \code{null}
-#' means \code{leadr::board} just returns the leaderboard tibble.
+#' @param model model to add to the leaderboard. If no model is supplied
+#' (the default \code{null}), \code{board} returns the leaderboard tibble
+#' for the project.
 #' @param path globally sets the path to save models and leaderboards. By
-#' default, the path is the project directory.
-#' @param level name of directory that contains saved models and leaderboards.
-#' This will be a subdirectory of the specified path. The default \code{level}
-#' is \code{one} which gives a directory name \code{/level_one/}.
+#' default, the path is the project directory found by \code{usethis::proj_get()}.
+#' @param dir globally sets name of directory where models are saved.
+#' This will be a subdirectory of the specified path. The default directory
+#' is named \code{/models_one}. If no argument is supplied, the model will be saved
+#' in the previously specified directory. See the example below.
+#' @param save whether \code{board} should save the supplied model to \code{dir}. If
+#' \code{FALSE} the model will not be saved, but will be added to the leaderboard.
+#' @param quiet whether \code{board} should return the leaderboard tibble to the console.
+#' By default \code{quiet = FALSE} means that the tibble prints to console.
+#' \code{quiet = TRUE} is useful in a \code{.Rmd} environment, where you want to add
+#' the model to the leaderboard without printing the tibble.
 #'
-#' @return \code{tibble} containing the most updated leaderboard.
+#' @return \code{tibble} containing the most up-to-date leaderboard.
 #'
 #' @examples
 #' # add caret model to leaderboard
-#' # model <- train(...)
+#' # model saved to "/models_one"
+#' model <- train(...)
 #' leadr::board(model)
 #'
-#' # to return tibble leaderboard
+#' # return tibble leaderboard
 #' leadr::board()
+#'
+#' # save to different directory
+#' ensemble <- train(...)
+#' leadr::board(ensemble, dir = "ensembles_one")
+#'
+#' # board automatically saves to previous directory
+#' # model saved to "/ensembles_one"
+#' ensemble2 <- train(...)
+#' leadr::board(ensembles2)
 #'
 #' @importFrom magrittr %>%
 #' @export
 board <- function(
-  model = NULL, spec = NULL, path = NULL, level = 'one', save = TRUE) {
+  model = NULL, path = NULL, dir = NULL, save = TRUE, quiet = FALSE) {
+
+  # have a peak argument that returns a tibble showing previous model's ranking
+  default_dir = "/models_one"
 
   if (is.null(get_path()) || (!is.null(path))) {
     if (is.null(path)) {
-      .globals$path <- usethis::proj_get()
+      set_path(usethis::proj_get())
     } else {
-      .globals$path <- path
+      set_path(path)
     }
   }
-
   path = get_path()
-  path = paste0(path, "/level_", level, "/")
-  if (!dir.exists(path))
-    dir.create(path)
+
+  if (is.null(get_dir()) || (!is.null(dir))) {
+    if (is.null(dir)) {
+      set_dir(default_dir)
+    } else {
+      set_dir(dir)
+    }
+  }
+  dir = get_dir()
 
   leadrboard <- new_leadrboard()
-  leadrboard_path <- paste0(path, "leadrboard.RDS")
+  leadrboard_path <- paste0(path, "/leadrboard.RDS")
   if (file.exists(leadrboard_path))
     leadrboard <- readRDS(leadrboard_path)
 
   if (!is.null(model)) {
     model_num = nrow(leadrboard) + 1
-    leadrboard <- add_to(leadrboard, model, spec, model_num)
+    leadrboard <- add_to(leadrboard, model, model_num, dir)
     saveRDS(leadrboard, leadrboard_path)
 
-    if (save) saveRDS(model, paste0(path, "model", model_num, ".RDS"))
+    if (save) {
+      model_path = paste0(path, "/", dir, "/")
+      if (!dir.exists(model_path))
+        dir.create(model_path)
+
+      saveRDS(model, paste0(model_path, "model", model_num, ".RDS"))
+    }
   }
 
+  if (quiet) return(invisible(leadrboard))
+
+  leadrboard$num <- id(leadrboard$num)
   leadrboard
 }
 
 new_leadrboard <- function() {
+  # add a directory column so you can filter by directory
   tibble::tibble(
     num = integer(),
+    dir = character(),
     model = character(),
     accuracy = numeric(),
     cv = integer(),
@@ -72,12 +105,13 @@ new_leadrboard <- function() {
   )
 }
 
-add_to <- function(leadrboard, model, spec, num) {
+add_to <- function(leadrboard, model, num, dir) {
   # when adding to leadrboard, if metric doesn't exist as a column,
   # add it
 
   new_row = list()
-  new_row$num = num
+  new_row$num = num #removed id(), see if column conversion works.
+  new_row$dir = dir
 
   if (inherits(model, "train")) {
     new_row$model = model$method
@@ -86,11 +120,13 @@ add_to <- function(leadrboard, model, spec, num) {
     new_row$method = model$control$method
     new_row$tune = list(as.list(model$bestTune))
     new_row$seed = list(model$control$seeds)
+  } else {
+    stop("leadr only supports caret train objects (so far).")
   }
 
-  matched <- purrr::map_lgl(leadrboard$seed, ~identical(., new_row$seed))
+  matched <- purrr::map_lgl(leadrboard$seed, ~identical(list(.), new_row$seed))
   if (any(matched)) {
-    new_row$resample <- leadrboard$resample[which(matched)]
+    new_row$resample <- leadrboard$resample[which(matched)][1]
   } else {
     if (!(nrow(leadrboard) > 0)) {
       new_row$resample <- 1
@@ -111,7 +147,5 @@ add_to <- function(leadrboard, model, spec, num) {
     dplyr::arrange(desc(accuracy))
 }
 
-get_path <- function() {
-  .globals$path
-}
+
 

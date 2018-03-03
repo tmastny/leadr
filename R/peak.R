@@ -3,11 +3,11 @@
 #' This function returns a tibble with the 8 models ranked closest to the
 #' supplied model in accuracy. Usually chained with the magrittr pipe \code{\%>\%}.
 #'
-#' @param leadrboard leadrboard tibble returned by \code{\link{board}}
+#' @param leadrboard leaderboard tibble returned by \code{\link{board}}
 #' @param num the number of the model. See \code{\link{last_model}} to easily
 #' specify model number.
 #'
-#' @return A filtered leadrboard tibble with only 9 rows, centerd around the
+#' @return A filtered leaderboard tibble with only 9 rows, centerd around the
 #' supplied model number.
 #'
 #' @examples
@@ -16,6 +16,8 @@
 #'
 #' @export
 peak <- function(leadrboard, num) {
+  set_num(num)
+
   pos <- return_pos(leadrboard$num, num)
   leadrboard[pos$lower:pos$upper,]
 }
@@ -39,14 +41,12 @@ return_pos <- function(models, num) {
 
 #' Get the index of the last model ran
 #'
-#' This function returns the leaderboard column \code{num} for the last
+#' This function returns the \code{num} value from the leaderboard for the last
 #' model ran. This function is intended to be used with \code{\link{peak}}.
 #'
 #' @param num used to indicate the number of models before the previously ran model.
 #' The default \code{0} indicates the previously ran model. \code{k} would mean the
 #' model ran \code{k} times before the previous model.
-#' @param level specifies the directory of the leaderboard. By default the level
-#' is \code{'one'}.
 #'
 #' @return Number from the leaderboard column \code{num} for the last model.
 #'
@@ -60,10 +60,9 @@ return_pos <- function(models, num) {
 #'   peak(last_model(1))
 #'
 #' @export
-last_model <- function(num = 0, level = 'one') {
-  path <- get_path()
-  path <- paste0(path, "/level_", level, "/leadrboard.RDS")
-  nrow(readRDS(path)) - num
+last_model <- function(num = 0) {
+  load_path <- paste0(get_path(), "/leadrboard.RDS")
+  nrow(readRDS(load_path)) - num
 }
 
 

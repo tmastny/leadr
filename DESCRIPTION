@@ -21,6 +21,8 @@ Imports:
     tibble,
     readr,
     magrittr,
-    purrr
+    purrr,
+    crayon,
+    pillar
 Remotes: tidyverse/magrittr
 RoxygenNote: 6.0.1.9000

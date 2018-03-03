@@ -4,21 +4,18 @@
 \alias{last_model}
 \title{Get the index of the last model ran}
 \usage{
-last_model(num = 0, level = "one")
+last_model(num = 0)
 }
 \arguments{
 \item{num}{used to indicate the number of models before the previously ran model.
 The default \code{0} indicates the previously ran model. \code{k} would mean the
 model ran \code{k} times before the previous model.}
-
-\item{level}{specifies the directory of the leaderboard. By default the level
-is \code{'one'}.}
 }
 \value{
 Number from the leaderboard column \code{num} for the last model.
 }
 \description{
-This function returns the leaderboard column \code{num} for the last
+This function returns the \code{num} value from the leaderboard for the last
 model ran. This function is intended to be used with \code{\link{peak}}.
 }
 \examples{
