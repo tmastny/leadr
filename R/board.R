@@ -92,6 +92,7 @@ board <- function(
 new_leadrboard <- function() {
   # add a directory column so you can filter by directory
   tibble::tibble(
+    rank = integer(),
     id = integer(),
     dir = character(),
     model = character(),
@@ -106,6 +107,7 @@ new_leadrboard <- function() {
 
 add_to <- function(leadrboard, model, id, dir) {
   new_row = list()
+  new_row$rank = 1
   new_row$id = id
   new_row$dir = dir
 
@@ -141,5 +143,11 @@ add_to <- function(leadrboard, model, id, dir) {
 
   leadrboard <- leadrboard %>%
     dplyr::arrange(desc(accuracy))
+
+  leadrboard <- leadrboard %>%
+    dplyr::mutate(rank = row_number()) %>%
+    dplyr::group_by(accuracy) %>%
+    dplyr::mutate(rank = min(rank)) %>%
+    dplyr::ungroup()
 }
 
