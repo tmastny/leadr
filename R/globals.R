@@ -2,7 +2,7 @@
 .globals <- new.env(parent = emptyenv())
 .globals$path <- NULL
 .globals$dir <- NULL
-.globals$num <- NULL
+.globals$id <- NULL
 
 get_path <- function() {
   .globals$path
@@ -20,10 +20,11 @@ set_dir <- function(dir) {
   .globals$dir <- dir
 }
 
-get_num <- function() {
-  .globals$num
+get_id <- function() {
+  .globals$id
 }
 
-set_num <- function(num) {
-  .globals$num <- num
+set_id <- function(id) {
+  .globals$id <- id
 }
+

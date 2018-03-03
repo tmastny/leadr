@@ -5,7 +5,7 @@
 #' trainControl object.
 #'
 #' @param seed starting seed for list of seeds
-#' @param k_fold number of folds or resamples
+#' @param number number of folds or resamples
 #'
 #' @return List of seeds used by \code{trainControl}.
 #'
@@ -13,12 +13,12 @@
 #' trainControl(method = 'cv', number = 10, seeds = caret_seed(1234, 10))
 #'
 #' @export
-caret_seed <- function(seed = 1, k_fold) {
+caret_seed <- function(seed = 1, number) {
   set.seed(seed)
-  seeds <- vector(mode = "list", length = k_fold + 1)
+  seeds <- vector(mode = "list", length = number + 1)
 
-  for(i in 1:k_fold) seeds[[i]]<- sample.int(n=1000, 4)
-  seeds[[k_fold + 1]] <- sample.int(1000, 1)
+  for(i in 1:number) seeds[[i]]<- sample.int(n=1000, 4)
+  seeds[[number + 1]] <- sample.int(1000, 1)
   seeds
 }
 

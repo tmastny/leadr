@@ -24,8 +24,8 @@ c.id <- function(x, ...) {
 
 #' @export
 format.id <- function(x, ..., formatter = id_color) {
-  x_highlight <- which(x == get_num())
-  set_num(NULL)
+  x_highlight <- which(x == get_id())
+  set_id(NULL)
 
   x_valid <- which(!is.na(x))
 

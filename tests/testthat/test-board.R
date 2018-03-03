@@ -9,7 +9,7 @@ test_that("Model is saved to directory", {
   unlink("../../leadrboard.RDS")
 
   folds <- 5
-  seeds <- caret_seed(k_fold = folds)
+  seeds <- caret_seed(number = folds)
 
   control <- trainControl(
     method = "cv",
@@ -35,7 +35,7 @@ test_that("Model is saved to directory", {
 
 test_that("Next model", {
   folds <- 5
-  seeds <- caret_seed(k_fold = folds)
+  seeds <- caret_seed(number = folds)
 
   control <- trainControl(
     method = "cv",

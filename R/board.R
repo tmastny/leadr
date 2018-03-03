@@ -44,7 +44,6 @@
 board <- function(
   model = NULL, path = NULL, dir = NULL, save = TRUE, quiet = FALSE) {
 
-  # have a peak argument that returns a tibble showing previous model's ranking
   default_dir = "/models_one"
 
   if (is.null(get_path()) || (!is.null(path))) {
@@ -71,8 +70,8 @@ board <- function(
     leadrboard <- readRDS(leadrboard_path)
 
   if (!is.null(model)) {
-    model_num = nrow(leadrboard) + 1
-    leadrboard <- add_to(leadrboard, model, model_num, dir)
+    model_id = nrow(leadrboard) + 1
+    leadrboard <- add_to(leadrboard, model, model_id, dir)
     saveRDS(leadrboard, leadrboard_path)
 
     if (save) {
@@ -80,44 +79,41 @@ board <- function(
       if (!dir.exists(model_path))
         dir.create(model_path)
 
-      saveRDS(model, paste0(model_path, "model", model_num, ".RDS"))
+      saveRDS(model, paste0(model_path, "model", model_id, ".RDS"))
     }
   }
 
   if (quiet) return(invisible(leadrboard))
 
-  leadrboard$num <- id(leadrboard$num)
+  leadrboard$id <- id(leadrboard$id)
   leadrboard
 }
 
 new_leadrboard <- function() {
   # add a directory column so you can filter by directory
   tibble::tibble(
-    num = integer(),
+    id = integer(),
     dir = character(),
     model = character(),
     accuracy = numeric(),
-    cv = integer(),
     method = character(),
+    num = integer(),
     tune = list(),
     seed = list(),
     resample = integer()
   )
 }
 
-add_to <- function(leadrboard, model, num, dir) {
-  # when adding to leadrboard, if metric doesn't exist as a column,
-  # add it
-
+add_to <- function(leadrboard, model, id, dir) {
   new_row = list()
-  new_row$num = num #removed id(), see if column conversion works.
+  new_row$id = id
   new_row$dir = dir
 
   if (inherits(model, "train")) {
     new_row$model = model$method
     new_row$accuracy = max(model$results$Accuracy)
-    new_row$cv = model$control$number
     new_row$method = model$control$method
+    new_row$num = model$control$number
     new_row$tune = list(as.list(model$bestTune))
     new_row$seed = list(model$control$seeds)
   } else {
@@ -146,6 +142,4 @@ add_to <- function(leadrboard, model, num, dir) {
   leadrboard <- leadrboard %>%
     dplyr::arrange(desc(accuracy))
 }
-
-
 

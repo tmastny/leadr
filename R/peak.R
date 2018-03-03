@@ -4,8 +4,8 @@
 #' supplied model in accuracy. Usually chained with the magrittr pipe \code{\%>\%}.
 #'
 #' @param leadrboard leaderboard tibble returned by \code{\link{board}}
-#' @param num the number of the model. See \code{\link{last_model}} to easily
-#' specify model number.
+#' @param id the id of the model. See \code{\link{last_model}} to easily
+#' specify model id.
 #'
 #' @return A filtered leaderboard tibble with only 9 rows, centerd around the
 #' supplied model number.
@@ -15,21 +15,21 @@
 #'   peak(last_model())
 #'
 #' @export
-peak <- function(leadrboard, num) {
-  set_num(num)
+peak <- function(leadrboard, id) {
+  set_id(id)
 
-  pos <- return_pos(leadrboard$num, num)
+  pos <- return_pos(leadrboard$id, id)
   leadrboard[pos$lower:pos$upper,]
 }
 
-return_pos <- function(models, num) {
-  row_num <- which(models == num)
+return_pos <- function(models, id) {
+  row_id <- which(models == id)
 
-  lower = row_num - 4
+  lower = row_id - 4
   if (lower < 1)
     lower <- 1
 
-  upper <- row_num + 4
+  upper <- row_id + 4
   if (upper > length(models))
     upper <- length(models)
 
@@ -41,14 +41,14 @@ return_pos <- function(models, num) {
 
 #' Get the index of the last model ran
 #'
-#' This function returns the \code{num} value from the leaderboard for the last
+#' This function returns the \code{id} value from the leaderboard for the last
 #' model ran. This function is intended to be used with \code{\link{peak}}.
 #'
-#' @param num used to indicate the number of models before the previously ran model.
+#' @param id used to indicate the number of models before the previously ran model.
 #' The default \code{0} indicates the previously ran model. \code{k} would mean the
 #' model ran \code{k} times before the previous model.
 #'
-#' @return Number from the leaderboard column \code{num} for the last model.
+#' @return Number from the leaderboard column \code{id} for the last model.
 #'
 #' @examples
 #' # peak at previous model
@@ -60,9 +60,9 @@ return_pos <- function(models, num) {
 #'   peak(last_model(1))
 #'
 #' @export
-last_model <- function(num = 0) {
+last_model <- function(id = 0) {
   load_path <- paste0(get_path(), "/leadrboard.RDS")
-  nrow(readRDS(load_path)) - num
+  nrow(readRDS(load_path)) - id
 }
 
 
