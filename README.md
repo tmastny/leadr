@@ -32,7 +32,7 @@ library(caret)
 model <- train(Species ~ ., data = iris, method = 'glmnet')
 ```
 
-Before leadr, we might create the script `glmnet_1.R` to record the model, save the `train` object as a [.RDS file](https://www.fromthebottomoftheheap.net/2012/04/01/saving-and-loading-r-objects/), and write down our personal results in a spreadsheet.
+Before leadr, we might create the script `glmnet_1.R` to record the model, save the `train` object as a [.RDS file](https://www.fromthebottomoftheheap.net/2012/04/01/saving-and-loading-r-objects/), and keep track of the accuracy in a spreadsheet.
 
 With leadr, we only need to do the following:
 
@@ -47,7 +47,7 @@ leadr::board(model)
 
 `board` creates a personal leaderboard for your project that ranks and sorts your model based on the model's metric. The leaderboard tibble has all the information needed to successfully recreate and document any model.
 
-`leadr::board` allow modifies the project directory:
+`leadr::board` also modifies the project directory:
 
     .
     ├── iris.Rproj
@@ -55,9 +55,9 @@ leadr::board(model)
     └── models_one
         └── model1.RDS
 
-At the root level, it saves the leaderboard tibble as a `.RDS` file, and creates a subdirectory (named `/models_one` by default) to save all the models. All future models pass to `board` will be added to the leaderboard and saved in the directory.
+At the root `board` saves the leaderboard tibble as a `.RDS` file and creates a subdirectory (named `/models_one` by default) to save all the models. All future models passed to `board` will be added to the leaderboard and saved in the directory.
 
 Interactive
 -----------
 
-In the previous example, we did everything from the command line interactively and leadr took care of the organization and documentation. In fact leadr benefits from interactive use in other ways. For example, leadr uses [pillar](https://github.com/r-lib/pillar) and [crayon](https://github.com/r-lib/crayon) to programmatically color ranking outputs:
+In the previous example, we did everything from the command line interactively and leadr took care of the organization and documentation. In fact, leadr benefits from interactive use in other ways. For example, leadr uses [pillar](https://github.com/r-lib/pillar) and [crayon](https://github.com/r-lib/crayon) to programmatically color ranking outputs:
