@@ -4,12 +4,12 @@
 \alias{caret_seed}
 \title{Set seed for \code{caret}'s \code{trainControl}}
 \usage{
-caret_seed(seed = 1, k_fold)
+caret_seed(seed = 1, number)
 }
 \arguments{
 \item{seed}{starting seed for list of seeds}
 
-\item{k_fold}{number of folds or resamples}
+\item{number}{number of folds or resamples}
 }
 \value{
 List of seeds used by \code{trainControl}.

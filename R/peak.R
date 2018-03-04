@@ -1,40 +1,74 @@
-#' Peak at the leaderboard position of a model
+#' Peak at leaderboard positions
 #'
-#' This function returns a tibble with the 8 models ranked closest to the
-#' supplied model in accuracy. Usually chained with the magrittr pipe \code{\%>\%}.
+#' This function returns a tibble with showing the models ranked closest to the
+#' supplied model. Usually chained with the magrittr pipe \code{\%>\%}.
 #'
 #' @param leadrboard leaderboard tibble returned by \code{\link{board}}
-#' @param id the id of the model. See \code{\link{last_model}} to easily
-#' specify model id.
+#' @param ... a number, numbers, or vector of numbers to that correspond to model
+#' ids in the leaderboard. See \code{\link{last_model}} to easily specify model ids.
+#' @param n the number of rows to return. By default, the tibble will return 10 rows.
+#' \code{peak} will return a tibble with more than 20 rows, but the console
+#' output is limited by \code{options(tibble.print_max)}, which has a default of 20.
+#' @param how takes values of \code{c("centered", "above", "below")}. Determines
+#' where to peak around the first number supplied to \code{...}.
 #'
-#' @return A filtered leaderboard tibble with only 9 rows, centerd around the
-#' supplied model number.
+#' @return A subset of the leaderboard tibble. Given the supplied model ids,
+#' \code{peak} tries to return a tibble of length \code{n}. If the maximum distance
+#' between model ids are greater than \code{n}, \code{peak} will return the shortest
+#' tibble that includes all the models. In supporting consoles, the supplied
+#' model ids are highlighted.
 #'
 #' @examples
 #' leadr::board() %>%
 #'   peak(last_model())
 #'
+#' # peak at models 1 and 2
+#' board() %>%
+#'   peak(1, 2)
+#'
+#' board() %>%
+#'   peak(c(1, 2))
+#'
 #' @export
-peak <- function(leadrboard, id) {
+peak <- function(leadrboard, ..., n = 10, how = "centered") {
+  id <- c(...)
+  if (any(id > nrow(leadrboard)) || any(id < 1) || (!is.numeric(id)))
+    stop("model id is not valid.")
+
+  # tibble, by default can't print more than twenty rows
   set_id(id)
 
-  pos <- return_pos(leadrboard$id, id)
+  place <- 6
+  if (how %in% c('above', 'below'))
+    place <- list(below = 1, above = 10)[how][[1]]
+
+  pos <- return_pos(leadrboard$id, id, n, place)
   leadrboard[pos$lower:pos$upper,]
 }
 
-return_pos <- function(models, id) {
-  row_id <- which(models == id)
+return_pos <- function(models, id, window_size = 10, place) {
+  row_id <- which(models == id[1])
 
-  lower = row_id - 4
+  ## calculate disance ()
+  if (length(id) > 1) {
+    positions <- which(models %in% id)
+    distance <- dist(positions)
+    if (max(distance) > window_size)
+      return(list(lower = min(positions), upper = max(positions)))
+    row_id = ceiling(mean(c(min(positions), max(positions))))
+  }
+
+  lower = row_id - (place - 1)
   if (lower < 1)
     lower <- 1
 
-  upper <- row_id + 4
+  upper <- row_id + window_size - place
   if (upper > length(models))
     upper <- length(models)
 
-  upper <- min(length(models), lower + 8)
-  lower <- max(1, upper - 8)
+  upper <- min(length(models), lower + window_size - 1)
+  lower <- max(1, upper - (window_size - 1))
+
 
   list(lower = lower, upper = upper)
 }

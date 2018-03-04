@@ -34,15 +34,50 @@ test_that("Peaking returns 9 rows whereever model is ranked", {
   max_id <- leadr::board()$id[max_pos]
 
   max_peak <- leadr::board() %>% peak(max_id)
-  expect_true(nrow(max_peak) == 9)
+  expect_true(nrow(max_peak) == 10)
 
   min_pos <- which.min(leadr::board()$accuracy)
   min_id <- leadr::board()$id[min_pos]
 
   min_peak <- leadr::board() %>% peak(min_id)
-  expect_true(nrow(max_peak) == 9)
+  expect_true(nrow(max_peak) == 10)
 })
 
+test_that("The peaked leaderboard returns all specified models", {
+  peaked <- board() %>%
+    peak(15)
+
+  expect_true(any(peaked$id == 15))
+
+  peaked <- board() %>%
+    peak(2, 22)
+
+  expect_true(any(peaked$id == 1))
+  expect_true(any(peaked$id == 9))
+
+  peaked <- board() %>%
+    peak(c(19, 8))
+
+  expect_true(any(peaked$id == 19))
+  expect_true(any(peaked$id == 8))
+
+  peaked <- board() %>%
+    peak(1, 8, 19, 22)
+
+  expect_true(any(peaked$id == 1))
+  expect_true(any(peaked$id == 8))
+  expect_true(any(peaked$id == 19))
+  expect_true(any(peaked$id == 22))
+})
+
+test_that("peaking at min and max accuracy returns the full table", {
+  b <- board()
+  id_min <- b[1,]$id
+  id_max <- b[nrow(b),]$id
+
+  peaked <- b %>% peak(id_min, id_max)
+  expect_equal(nrow(peaked), nrow(b))
+})
 
 
 

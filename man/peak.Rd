@@ -2,26 +2,43 @@
 % Please edit documentation in R/peak.R
 \name{peak}
 \alias{peak}
-\title{Peak at the leaderboard position of a model}
+\title{Peak at leaderboard positions}
 \usage{
-peak(leadrboard, num)
+peak(leadrboard, ..., n = 10, how = "centered")
 }
 \arguments{
 \item{leadrboard}{leaderboard tibble returned by \code{\link{board}}}
 
-\item{num}{the number of the model. See \code{\link{last_model}} to easily
-specify model number.}
+\item{...}{a number, numbers, or vector of numbers to that correspond to model
+ids in the leaderboard. See \code{\link{last_model}} to easily specify model ids.}
+
+\item{n}{the number of rows to return. By default, the tibble will return 10 rows.
+\code{peak} will return a tibble with more than 20 rows, but the console
+output is limited by \code{options(tibble.print_max)}, which has a default of 20.}
+
+\item{how}{takes values of \code{c("centered", "above", "below")}. Determines
+where to peak around the first number supplied to \code{...}.}
 }
 \value{
-A filtered leaderboard tibble with only 9 rows, centerd around the
-supplied model number.
+A subset of the leaderboard tibble. Given the supplied model ids,
+\code{peak} tries to return a tibble of length \code{n}. If the maximum distance
+between model ids are greater than \code{n}, \code{peak} will return the shortest
+tibble that includes all the models. In supporting consoles, the supplied
+model ids are highlighted.
 }
 \description{
-This function returns a tibble with the 8 models ranked closest to the
-supplied model in accuracy. Usually chained with the magrittr pipe \code{\%>\%}.
+This function returns a tibble with showing the models ranked closest to the
+supplied model. Usually chained with the magrittr pipe \code{\%>\%}.
 }
 \examples{
 leadr::board() \%>\%
   peak(last_model())
+
+# peak at models 1 and 2
+board() \%>\%
+  peak(1, 2)
+
+board() \%>\%
+  peak(c(1, 2))
 
 }
