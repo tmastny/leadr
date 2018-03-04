@@ -3,8 +3,12 @@ context("peak")
 library(caret)
 
 test_that("If the leaderboard has less than 2 entries, peak returns the whole board", {
-  peaked <- leadr::board() %>% peak(last_model())
+  peaked <- leadr::board() %>% peak(at_last())
   expect_true(nrow(peaked) == 2)
+})
+
+test_that("at_last returns correct model id", {
+  expect_equal(at_last(), 2)
 })
 
 test_that("Peaking returns 9 rows whereever model is ranked", {
@@ -79,6 +83,10 @@ test_that("peaking at min and max accuracy returns the full table", {
   expect_equal(nrow(peaked), nrow(b))
 })
 
-
+test_that("at_last returns correct model id", {
+  expect_equal(at_last(), 22)
+  expect_equal(at_last(2), c(22, 21))
+  expect_equal(at_last(3), c(22, 21, 20))
+})
 
 

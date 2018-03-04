@@ -10,7 +10,7 @@ peak(leadrboard, ..., n = 10, how = "centered")
 \item{leadrboard}{leaderboard tibble returned by \code{\link{board}}}
 
 \item{...}{a number, numbers, or vector of numbers to that correspond to model
-ids in the leaderboard. See \code{\link{last_model}} to easily specify model ids.}
+ids in the leaderboard. See \code{\link{at_last}} to easily specify model ids.}
 
 \item{n}{the number of rows to return. By default, the tibble will return 10 rows.
 \code{peak} will return a tibble with more than 20 rows, but the console
@@ -31,8 +31,9 @@ This function returns a tibble with showing the models ranked closest to the
 supplied model. Usually chained with the magrittr pipe \code{\%>\%}.
 }
 \examples{
-leadr::board() \%>\%
-  peak(last_model())
+# peak at last model saved
+board() \%>\%
+  peak(at_last())
 
 # peak at models 1 and 2
 board() \%>\%

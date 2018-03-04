@@ -5,7 +5,7 @@
 #'
 #' @param leadrboard leaderboard tibble returned by \code{\link{board}}
 #' @param ... a number, numbers, or vector of numbers to that correspond to model
-#' ids in the leaderboard. See \code{\link{last_model}} to easily specify model ids.
+#' ids in the leaderboard. See \code{\link{at_last}} to easily specify model ids.
 #' @param n the number of rows to return. By default, the tibble will return 10 rows.
 #' \code{peak} will return a tibble with more than 20 rows, but the console
 #' output is limited by \code{options(tibble.print_max)}, which has a default of 20.
@@ -19,8 +19,9 @@
 #' model ids are highlighted.
 #'
 #' @examples
-#' leadr::board() %>%
-#'   peak(last_model())
+#' # peak at last model saved
+#' board() %>%
+#'   peak(at_last())
 #'
 #' # peak at models 1 and 2
 #' board() %>%
@@ -73,30 +74,34 @@ return_pos <- function(models, id, window_size = 10, place) {
   list(lower = lower, upper = upper)
 }
 
-#' Get the index of the last model ran
+#' Get the id of the last model ran
 #'
-#' This function returns the \code{id} value from the leaderboard for the last
-#' model ran. This function is intended to be used with \code{\link{peak}}.
+#' This function returns the model ids for the last \code{number} models saved
+#' to leaderboard. This function is intended to be used with \code{\link{peak}}.
 #'
-#' @param id used to indicate the number of models before the previously ran model.
-#' The default \code{0} indicates the previously ran model. \code{k} would mean the
-#' model ran \code{k} times before the previous model.
+#' @param number number that indicates the last n models to peak at.
 #'
-#' @return Number from the leaderboard column \code{id} for the last model.
+#' @return model id of last models
 #'
 #' @examples
 #' # peak at previous model
-#' leadr::board() %>%
-#'   peak(last_model())
+#' board() %>%
+#'   peak(at_last())
 #'
-#' # peak at model before previous
-#' leadr::board() %>%
-#'   peak(last_model(1))
+#' # peak at last two models
+#' board() %>%
+#'   peak(at_last(2))
+#'
+#' # peak at last three models
+#' # and model 1
+#' board() %>%
+#'   peak(at_last(3), 1)
 #'
 #' @export
-last_model <- function(id = 0) {
+at_last <- function(number = 1) {
+  number <- 1:number
   load_path <- paste0(get_path(), "/leadrboard.RDS")
-  nrow(readRDS(load_path)) - id
+  nrow(readRDS(load_path)) - number + 1
 }
 
 
