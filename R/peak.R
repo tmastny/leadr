@@ -95,6 +95,9 @@ return_pos <- function(models, id, window_size = 10, place) {
 #' board() %>%
 #'   peak(at_last(3), 1)
 #'
+#' board() %>%
+#'   dplyr::filter(id %in% at_last(3))
+#'
 #' @export
 at_last <- function(number = 1) {
   number <- 1:number

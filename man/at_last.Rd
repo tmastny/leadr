@@ -30,4 +30,7 @@ board() \%>\%
 board() \%>\%
   peak(at_last(3), 1)
 
+board() \%>\%
+  dplyr::filter(id \%in\% at_last(3))
+
 }
