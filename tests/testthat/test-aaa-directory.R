@@ -68,9 +68,6 @@ test_that("board can add new folder to new path", {
   path_to_model <- file.path(new_path, new_dir, "model3.RDS")
   expect_true(file.exists(path_to_model))
 
-  leadr:::set_path(NULL)
-  leadr:::set_dir(NULL)
-
   unlink(new_path, recursive = TRUE)
   leadr:::set_path(NULL)
   leadr:::set_dir(NULL)
