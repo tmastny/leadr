@@ -8,7 +8,7 @@
 #' for the project.
 #' @param path globally sets the path to save models and leaderboards. By
 #' default, the path is the project directory found by. For best results, the path
-#' string should be constructed with \code{file.path} or \code{here::here}.
+#' string should be constructed with \code{file.path} or
 #' \href{https://github.com/krlmlr/here}{\code{here::here()}}.
 #' @param dir globally sets name of directory where models are saved.
 #' This will be a subdirectory of the specified path. The default directory
@@ -98,11 +98,12 @@ new_leadrboard <- function() {
     dir = character(),
     model = character(),
     accuracy = numeric(),
+    public = numeric(),
     method = character(),
     num = integer(),
+    resample = integer(),
     tune = list(),
-    seed = list(),
-    resample = integer()
+    seed = list()
   )
 }
 
@@ -117,6 +118,7 @@ add_to <- function(leadrboard, model, id, dir) {
     new_row$accuracy = max(model$results$Accuracy)
     new_row$method = model$control$method
     new_row$num = model$control$number
+    new_row$resample= NA
     new_row$tune = list(as.list(model$bestTune))
     new_row$seed = list(model$control$seeds)
   } else {

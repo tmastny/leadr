@@ -13,11 +13,13 @@ board(model = NULL, path = NULL, dir = NULL, save = TRUE,
 for the project.}
 
 \item{path}{globally sets the path to save models and leaderboards. By
-default, the path is the project directory found by \code{usethis::proj_get()}.}
+default, the path is the project directory found by. For best results, the path
+string should be constructed with \code{file.path} or
+\href{https://github.com/krlmlr/here}{\code{here::here()}}.}
 
 \item{dir}{globally sets name of directory where models are saved.
 This will be a subdirectory of the specified path. The default directory
-is named \code{/models_one}. If no argument is supplied, the model will be saved
+is named \code{models_one}. If no argument is supplied, the model will be saved
 in the previously specified directory. See the example below.}
 
 \item{save}{whether \code{board} should save the supplied model to \code{dir}. If
@@ -37,7 +39,7 @@ the model leaderboard for the project.
 }
 \examples{
 # add caret model to leaderboard
-# model saved to "/models_one"
+# model saved to "models_one"
 model <- train(...)
 leadr::board(model)
 
@@ -49,7 +51,7 @@ ensemble <- train(...)
 leadr::board(ensemble, dir = "ensembles_one")
 
 # board automatically saves to previous directory
-# model saved to "/ensembles_one"
+# model saved to "ensembles_one"
 ensemble2 <- train(...)
 leadr::board(ensembles2)
 
