@@ -7,10 +7,12 @@
 #' (the default \code{null}), \code{board} returns the leaderboard tibble
 #' for the project.
 #' @param path globally sets the path to save models and leaderboards. By
-#' default, the path is the project directory found by \code{usethis::proj_get()}.
+#' default, the path is the project directory found by. For best results, the path
+#' string should be constructed with \code{file.path} or \code{here::here}.
+#' \href{https://github.com/krlmlr/here}{\code{here::here()}}.
 #' @param dir globally sets name of directory where models are saved.
 #' This will be a subdirectory of the specified path. The default directory
-#' is named \code{/models_one}. If no argument is supplied, the model will be saved
+#' is named \code{models_one}. If no argument is supplied, the model will be saved
 #' in the previously specified directory. See the example below.
 #' @param save whether \code{board} should save the supplied model to \code{dir}. If
 #' \code{FALSE} the model will not be saved, but will be added to the leaderboard.
@@ -23,7 +25,7 @@
 #'
 #' @examples
 #' # add caret model to leaderboard
-#' # model saved to "/models_one"
+#' # model saved to "models_one"
 #' model <- train(...)
 #' leadr::board(model)
 #'
@@ -35,7 +37,7 @@
 #' leadr::board(ensemble, dir = "ensembles_one")
 #'
 #' # board automatically saves to previous directory
-#' # model saved to "/ensembles_one"
+#' # model saved to "ensembles_one"
 #' ensemble2 <- train(...)
 #' leadr::board(ensembles2)
 #'
@@ -44,11 +46,11 @@
 board <- function(
   model = NULL, path = NULL, dir = NULL, save = TRUE, quiet = FALSE) {
 
-  default_dir = "/models_one"
+  default_dir = "models_one"
 
   if (is.null(get_path()) || (!is.null(path))) {
     if (is.null(path)) {
-      set_path(usethis::proj_get())
+      set_path(here::here())
     } else {
       set_path(path)
     }
@@ -65,7 +67,7 @@ board <- function(
   dir = get_dir()
 
   leadrboard <- new_leadrboard()
-  leadrboard_path <- paste0(path, "/leadrboard.RDS")
+  leadrboard_path <- file.path(path, "leadrboard.RDS")
   if (file.exists(leadrboard_path))
     leadrboard <- readRDS(leadrboard_path)
 
@@ -75,11 +77,11 @@ board <- function(
     saveRDS(leadrboard, leadrboard_path)
 
     if (save) {
-      model_path = paste0(path, "/", dir, "/")
+      model_path = file.path(path, dir)
       if (!dir.exists(model_path))
         dir.create(model_path)
 
-      saveRDS(model, paste0(model_path, "model", model_id, ".RDS"))
+      saveRDS(model, file.path(model_path, paste0("model", model_id, ".RDS")))
     }
   }
 
@@ -90,7 +92,6 @@ board <- function(
 }
 
 new_leadrboard <- function() {
-  # add a directory column so you can filter by directory
   tibble::tibble(
     rank = integer(),
     id = integer(),
@@ -132,11 +133,6 @@ add_to <- function(leadrboard, model, id, dir) {
       new_row$resample <- max(leadrboard$resample) + 1
     }
   }
-
-
-  # To arrange spec if supplied:
-  # https://stackoverflow.com/questions/17031039/how-to-sort-a-character-vector-according-to-a-specific-order
-  # https://stackoverflow.com/questions/27312311/sort-a-named-list-in-r
 
   leadrboard <- leadrboard %>%
     dplyr::bind_rows(new_row)

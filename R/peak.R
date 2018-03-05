@@ -36,7 +36,6 @@ peak <- function(leadrboard, ..., n = 10, how = "centered") {
   if (any(id > nrow(leadrboard)) || any(id < 1) || (!is.numeric(id)))
     stop("model id is not valid.")
 
-  # tibble, by default can't print more than twenty rows
   set_id(id)
 
   place <- 6
@@ -50,7 +49,6 @@ peak <- function(leadrboard, ..., n = 10, how = "centered") {
 return_pos <- function(models, id, window_size = 10, place) {
   row_id <- which(models == id[1])
 
-  ## calculate disance ()
   if (length(id) > 1) {
     positions <- which(models %in% id)
     distance <- dist(positions)
@@ -100,7 +98,7 @@ return_pos <- function(models, id, window_size = 10, place) {
 #' @export
 at_last <- function(number = 1) {
   number <- 1:number
-  load_path <- paste0(get_path(), "/leadrboard.RDS")
+  load_path <- file.path(get_path(), "leadrboard.RDS")
   nrow(readRDS(load_path)) - number + 1
 }
 

@@ -19,12 +19,12 @@ Suggests:
 Imports: 
     dplyr,
     caret,
-    usethis,
     tibble,
     readr,
     magrittr,
     purrr,
     crayon,
-    pillar
+    pillar,
+    here
 Remotes: tidyverse/magrittr
 RoxygenNote: 6.0.1.9000
