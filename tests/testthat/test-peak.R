@@ -34,13 +34,13 @@ test_that("Peaking returns 9 rows whereever model is ranked", {
   purrr::map(model_list, leadr::board)
   expect_true(nrow(leadr::board()) == 22)
 
-  max_pos <- which.max(leadr::board()$accuracy)
+  max_pos <- which.max(leadr::board()$score)
   max_id <- leadr::board()$id[max_pos]
 
   max_peak <- leadr::board() %>% peak(max_id)
   expect_true(nrow(max_peak) == 10)
 
-  min_pos <- which.min(leadr::board()$accuracy)
+  min_pos <- which.min(leadr::board()$score)
   min_id <- leadr::board()$id[min_pos]
 
   min_peak <- leadr::board() %>% peak(min_id)
@@ -74,7 +74,7 @@ test_that("The peaked leaderboard returns all specified models", {
   expect_true(any(peaked$id == 22))
 })
 
-test_that("peaking at min and max accuracy returns the full table", {
+test_that("peaking at min and max score returns the full table", {
   b <- board()
   id_min <- b[1,]$id
   id_max <- b[nrow(b),]$id

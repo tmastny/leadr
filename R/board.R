@@ -97,7 +97,8 @@ new_leadrboard <- function() {
     id = integer(),
     dir = character(),
     model = character(),
-    accuracy = numeric(),
+    metric = character(),
+    score = numeric(),
     public = numeric(),
     method = character(),
     num = integer(),
@@ -115,7 +116,8 @@ add_to <- function(leadrboard, model, id, dir) {
 
   if (inherits(model, "train")) {
     new_row$model = model$method
-    new_row$accuracy = max(model$results$Accuracy)
+    new_row$metric = model$metric
+    new_row$score = max(model$results[,model$metric])
     new_row$method = model$control$method
     new_row$num = model$control$number
     new_row$resample= NA
@@ -139,12 +141,27 @@ add_to <- function(leadrboard, model, id, dir) {
   leadrboard <- leadrboard %>%
     dplyr::bind_rows(new_row)
 
-  leadrboard <- leadrboard %>%
-    dplyr::arrange(desc(accuracy))
+  direction <- dplyr::desc
+  if (model$metric == "RMSE") {
+    direction <- function(x) x
+  }
+
+  metric_types <- unique(leadrboard$metric)
+  current_pos <- which(metric_types == model$metric)
+  new_order <- c(metric_types[current_pos], metric_types[-current_pos])
 
   leadrboard <- leadrboard %>%
+    dplyr::mutate(metric = factor(metric, levels = new_order)) %>%
+    dplyr::arrange(metric) %>%
+    dplyr::group_by(metric) %>%
+    dplyr::arrange(direction(score), .by_group = TRUE) %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(metric = as.character(metric))
+
+  leadrboard <- leadrboard %>%
+    dplyr::group_by(metric) %>%
     dplyr::mutate(rank = row_number()) %>%
-    dplyr::group_by(accuracy) %>%
+    dplyr::group_by(score) %>%
     dplyr::mutate(rank = min(rank)) %>%
     dplyr::ungroup()
 }
