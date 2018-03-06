@@ -8,7 +8,7 @@ test_that("board can save models to a different directory", {
   model <- train(Species ~ ., data = iris, method = 'rf')
   board(model, dir = directory)
 
-  dir_path = file.path(here::here(), directory)
+  dir_path = here::here(directory)
   expect_true(dir.exists(dir_path))
 
   path_to_file <- file.path(dir_path, "model1.RDS")
@@ -20,7 +20,7 @@ test_that("board automatically saved to previous directory", {
   board(model)
 
   directory = "model_test"
-  dir_path = file.path(here::here(), directory)
+  dir_path = here::here(directory)
   path_to_file <- file.path(dir_path, "model2.RDS")
   expect_true(file.exists(path_to_file))
 
