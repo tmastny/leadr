@@ -10,6 +10,7 @@ test_that("oof_grab works with one model or a list", {
   listed_oof <- oof_grab(list(m1, m2))
 
   expect_identical(m1_oof, listed_oof[,-2])
+  expect_equal(nrow(m1_oof), nrow(m1$trainingData))
 })
 
 test_that("oof_grab returns identical outcomes as training data", {
