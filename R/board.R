@@ -1,6 +1,6 @@
 #' A tibble leaderboard for \code{caret} \code{train} objects
 #'
-#' This function (often called as \code{leadr::board}) updates and returns
+#' This function updates and returns
 #' the model leaderboard for the project.
 #'
 #' @param model model to add to the leaderboard. If no model is supplied
