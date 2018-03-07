@@ -107,4 +107,37 @@ add_observed <- function(agg_data, model) {
     tibble::add_column(!!(outcome) := observed)
 }
 
+#' Convert (subset) of the leaderboard tibble to a list of models
+#'
+#' Given a possibly filtered leaderboard tibble from \code{\link{board}},
+#' \code{to_list} returns every model in a list.
+#'
+#' @param leadrboard the leaderboard tibble, or a filtered verison of it
+#' from \code{\link{board}}
+#'
+#' @return a list of caret models (\code{train} objects)
+#'
+#' @examples
+#' model_list <- board() %>%
+#'   filter(group == 1) %>%
+#'   to_list()
+#'
+#' @export
+to_list <- function(leadrboard) {
+  purrr::map2(leadrboard$id, leadrboard$dir, get_model)
+}
 
+get_model <- function(id, dir) {
+  model_dir <- here::here(dir)
+  if (!dir.exists(model_dir)) {
+    warning("The directory ", dir, " does not exist. Returning NA.")
+    return(NA)
+  }
+  file_name <- paste0("model", id, ".RDS")
+  file_path <- file.path(model_dir, file_name)
+  if (!file.exists(file_path)) {
+    warning("The file ", file_name, " does not exist in ", dir, ". Returning NA.")
+    return(NA)
+  }
+  readRDS(file_path)
+}

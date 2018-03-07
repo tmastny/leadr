@@ -104,7 +104,8 @@ new_leadrboard <- function() {
     num = integer(),
     group = integer(),
     index = list(),
-    tune = list()
+    tune = list(),
+    seeds = list()
   )
 }
 
@@ -122,7 +123,8 @@ add_to <- function(leadrboard, model, id, dir) {
     new_row$num = model$control$number
     new_row$group = NA
     new_row$index = list(model$control$index)
-    new_row$tune = list(model$bestTune)
+    new_row$tune = list(as.list(model$bestTune))
+    new_row$seeds = list(model$control$seeds)
   } else {
     stop("leadr only supports caret train objects (so far).")
   }
