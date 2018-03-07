@@ -4,16 +4,19 @@
 \alias{oof_grab}
 \title{Return out of fold model predictions}
 \usage{
-oof_grab(models, train_data, type = "raw")
+oof_grab(models, type = "raw")
 }
 \arguments{
-\item{seed}{starting seed for list of seeds}
+\item{models}{A model or list of models to get the predictions}
 
-\item{number}{number of folds or resamples}
+\item{type}{the results of the prediction. For classification models,
+\code{"raw"} returns the outcome label and \code{"prob"} returns the
+label probabilities.}
 }
 \value{
-tibble or list of tibbles with out of fold predictions
-for each model.
+a tibble with one column per model and a column of the training data
+outcomes. If \code{type = "prob"} there will be n columns per model, where
+n is the number of labels in the outcome.
 }
 \description{
 Given a model or list of models, this function returns the
@@ -22,6 +25,6 @@ to make stacked or blended ensembles. See this vignette for more
 details.
 }
 \examples{
-trainControl(method = 'cv', number = 10, seeds = caret_seed(1234, 10))
+oofs <- oof_grab(model_list)
 
 }

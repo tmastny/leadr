@@ -34,7 +34,7 @@ the model to the leaderboard without printing the tibble.}
 \code{tibble} containing the most up-to-date leaderboard.
 }
 \description{
-This function (often called as \code{leadr::board}) updates and returns
+This function updates and returns
 the model leaderboard for the project.
 }
 \examples{
