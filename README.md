@@ -60,7 +60,7 @@ At the root `board` saves the leaderboard tibble as a `.RDS` file and creates a 
 Interactive
 -----------
 
-In the previous example, we did everything from the command line interactively and leadr took care of the organization and documentation. In fact, leadr benefits from interactive use in other ways. For example, leadr uses [pillar](https://github.com/r-lib/pillar) and [crayon](https://github.com/r-lib/crayon) to programmatically color ranking outputs:
+In the previous example, we did everything from the command line and leadr took care of the organization and documentation. In fact, leadr benefits from interactive use in other ways. For example, leadr uses [pillar](https://github.com/r-lib/pillar) and [crayon](https://github.com/r-lib/crayon) to programmatically color ranking outputs:
 
 ``` r
 knitr::include_graphics("vignettes/leadr_pic.png")
