@@ -72,4 +72,6 @@ For a full description of the features, check out my vignettes hosted here:
 
 1.  Introduction: walkthrough of the basic workflow of leadr
 
-2.  Ensembles: demonstrates how leadr facilitates stacked and blended ensemble building.
+2.  The Leaderboard: a description of each column of the leaderboard
+
+3.  Ensembles: demonstrates how leadr facilitates stacked and blended ensemble building
