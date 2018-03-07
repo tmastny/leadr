@@ -79,17 +79,3 @@ articles:
   leadr_pic.png: leadr_pic.png
   model averaging.png: model averaging.png
 
-navbar:
-  title: "leadr"
-  left:
-    - text: "leadr"
-      href: index.html
-    - text: "Reference"
-      href: "reference/"
-    - text: "Introduction"
-      href: articles/introduction.html
-    - text: "Ensembles"
-      href: articles/ensembles.html
-  right:
-    - icon: fa-github
-      href: https://github.com/tmastny/leadr
