@@ -17,7 +17,7 @@ caret_seed <- function(seed = 1, number) {
   set.seed(seed)
   seeds <- vector(mode = "list", length = number + 1)
 
-  for(i in 1:number) seeds[[i]]<- sample.int(n=1000, 4)
+  for(i in 1:number) seeds[[i]] <- sample.int(n=1000, 4)
   seeds[[number + 1]] <- sample.int(1000, 1)
   seeds
 }
@@ -44,50 +44,64 @@ oof_grab <- function(models, train_data, type = 'raw') {
   if (inherits(models, "train")) models <- list(models)
 
   agg_data <- purrr::map_dfc(models, grabber, type)
-
-  template_model <- models[[1]]
-  outcome <- attr(template_model$terms, "variables")[[2]]
-  outcome_data <- template_model$pred$obs[orderer(template_model)]
-  agg_data <- agg_data %>%
-    tibble::add_column(!!(outcome) := outcome_data)
-  agg_data
+  agg_data %>% add_observed(models[[1]])
 }
 
 grabber <- function(model, type) {
 
   if (is.null(model$pred)) {
     stop("Out of fold predictions were not saved in the caret model. ",
-         "Re-run with savePredictions = 'final' in trainControl.")
+         "Re-run with savePredictions = 'final' or TRUE in trainControl.")
   }
   grabbers <- list(raw = pred_grabber, prob = prob_grabber)
   grab <- grabbers[[type]]
 
   if (is.null(grab)) stop("Not a valid type. Use raw or prob.")
 
-  grab(model)
+  pred_data <- save_filter(model)
+  grab(pred_data, model)
 }
 
 # need to add warning if probabilities weren't saved
-prob_grabber <- function(model) {
+prob_grabber <- function(data, model) {
   columns <- as.character(unique(model$trainingData$.outcome))
-  if (all(!columns %in% names(model$pred))) {
+  if (all(!columns %in% names(data))) {
     stop("Probabilities were not saved, or are not available in the caret model. ",
          "Re-run with classProbs = TRUE in trainControl.")
   }
-  tibble::as_tibble(model$pred[orderer(model), columns])
+  tibble::as_tibble(data[orderer(data), columns])
 }
 
-pred_grabber <- function(model) {
+pred_grabber <- function(data, model) {
+  # if (nrow(model$pred) != nrow(model$trainingData)) {
+  #   stop("All resamples were saved, so oof_grab doesn't know which to pick in",
+  #        "the caret model.", "Re-run with savePredictions = 'final' in trainControl.")
+  # }
+  tibble::as_tibble(data$pred[orderer(data)])
+}
+
+orderer <- function(data) {
+  order(data$rowIndex)
+}
+
+save_filter <- function(model) {
   if (nrow(model$pred) != nrow(model$trainingData)) {
-    stop("All resamples were saved, so oof_grab doesn't know which to pick in",
-         "the caret model.", "Re-run with savePredictions = 'final' in trainControl.")
+    column_names <- names(model$bestTune)
+    column_values <- model$bestTune
+    filtered <- model$pred %>%
+      dplyr::filter_(paste(column_names, "==", shQuote(column_values), collapse = "&"))
+    return(filtered)
   }
-  tibble::as_tibble(model$pred$pred[orderer(model)])
+  model$pred
 }
 
-orderer <- function(model) {
-  order(model$pred$rowIndex)
-}
+add_observed <- function(agg_data, model) {
+  outcome <- attr(model$terms, "variables")[[2]]
 
+  data <- save_filter(model)
+  observed <- data$obs[orderer(data)]
+  agg_data <- agg_data %>%
+    tibble::add_column(!!(outcome) := observed)
+}
 
 

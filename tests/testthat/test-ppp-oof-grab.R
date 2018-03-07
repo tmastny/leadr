@@ -48,10 +48,32 @@ test_that("oof_grab throws an error if savePredictions = 'none'", {
   expect_error(oof_grab(model, type = 'prob'), "Out of fold predictions were not saved in the caret model*")
 })
 
-test_that("oof_grab throws an error if savePredictions = 'all'", {
-  control = trainControl(method = 'cv', number = '5', savePredictions = 'all')
-  model <- train(Species ~ ., data = iris, method = 'rf', trControl = control)
-  expect_error(oof_grab(model), "All resamples were saved, so oof_grab doesn't know which to pick in*")
+test_that("oof_grab grabs best predictions if savePredictions = 'all'", {
+  seeds <- caret_seed(number = 5)
+
+  control1 = trainControl(method = 'cv', number = 5, savePredictions = 'all',
+                         seeds = seeds)
+  m1 <- train(Species ~ ., data = iris, method = 'rf', trControl = control1)
+
+  control2 = trainControl(method = 'cv', number = 5, savePredictions = 'final',
+                          seeds = seeds)
+  m2 <- train(Species ~ ., data = iris, method = 'rf', trControl = control2)
+
+  expect_identical(oof_grab(m1), oof_grab(m2))
+})
+
+test_that("oof_grab grabs the best predictions if there are multiple tuning parameters", {
+  seeds <- caret_seed(number = 5)
+
+  control1 = trainControl(method = 'cv', number = 5, savePredictions = 'all',
+                          seeds = seeds)
+  m1 <- train(Species ~ ., data = iris, method = 'glmnet', trControl = control1)
+
+  control2 = trainControl(method = 'cv', number = 5, savePredictions = 'final',
+                          seeds = seeds)
+  m2 <- train(Species ~ ., data = iris, method = 'glmnet', trControl = control2)
+
+  expect_identical(oof_grab(m1), oof_grab(m2))
 })
 
 
