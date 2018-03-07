@@ -81,6 +81,7 @@ knitr::include_graphics("vignettes/leadr_pic.png")
 ## Vignettes
 
 For a full description of the features, check out my vignettes hosted here:
+https://tmastny.github.io/leadr/
 
 1. [Introduction](https://tmastny.github.io/leadr/articles/introduction.html): walkthrough of the basic workflow of leadr
 
