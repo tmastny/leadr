@@ -23,7 +23,8 @@ oof_grab <- function(models, type = "raw") {
   if (inherits(models, "train")) models <- list(models)
 
   agg_data <- purrr::map_dfc(models, grabber, type)
-  agg_data %>% add_observed(models[[1]])
+  agg_data <- agg_data %>% add_observed(models[[1]])
+  agg_data
 }
 
 grabber <- function(model, type) {
@@ -52,10 +53,6 @@ prob_grabber <- function(data, model) {
 }
 
 pred_grabber <- function(data, model) {
-  # if (nrow(model$pred) != nrow(model$trainingData)) {
-  #   stop("All resamples were saved, so oof_grab doesn't know which to pick in",
-  #        "the caret model.", "Re-run with savePredictions = 'final' in trainControl.")
-  # }
   tibble::as_tibble(data$pred[orderer(data)])
 }
 
