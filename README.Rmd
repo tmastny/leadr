@@ -84,7 +84,7 @@ For a full description of the features, check out my vignettes hosted here:
 
 1. [Introduction](https://tmastny.github.io/leadr/articles/introduction.html): walkthrough of the basic workflow of leadr
 
-2. Ensembles: overview of the tools that leadr provides to make ensemble models
+2. [Ensembles](https://tmastny.github.io/leadr/articles/ensemble.html): overview of the tools that leadr provides to make ensemble models
 
 
 
