@@ -3,7 +3,7 @@
 leadr
 =====
 
-The goal of leadr is to stream-line model organization in data science projects and Kaggle competitions. The main function `leadr::board` takes a [caret](https://github.com/topepo/caret) model automatically builds a personal leaderboard that persists across the entire project.
+The goal of leadr is to stream-line model organization in data science projects and Kaggle competitions. The main function `leadr::board` takes a [caret](https://github.com/topepo/caret) model and automatically builds a personal leaderboard that persists across the entire project.
 
 This leaderboard allows you to easily sort models by metrics (accuracy, RMSE, etc.) and ensures that you never lose track of a good model during interactive exploratory analysis.
 
