@@ -130,7 +130,7 @@ board() %>%
 
 Thanks to [pillar](https://github.com/r-lib/pillar) and [crayon](https://github.com/r-lib/crayon), `leadr::peak` also has special printing capabilities when used in a supported console. Here is an example of `peak` in the RStudio console. Notice that it highlights the peaked models in the output.
 
-```{r fig.align='center'}
+```{r echo='FALSE', fig.align='center'}
 knitr::include_graphics("leadr_pic.png")
 ```
 
