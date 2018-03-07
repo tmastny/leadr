@@ -1,0 +1,14 @@
+base
+purrr
+tidyverse
+ggplot2
+tibble
+tidyr
+readr
+dplyr
+stringr
+forcats
+lattice
+caret
+leadr
+bindrcpp

@@ -1,0 +1,140 @@
+---
+title: "Introduction"
+author: "Tim Mastny"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  warning = FALSE,
+  message = FALSE,
+  cache = TRUE
+)
+```
+
+```{r echo=FALSE}
+unlink(here::here('leadrboard.RDS'))
+unlink(here::here('models_one'), recursive = TRUE)
+```
+
+
+This vignette will show the basic `leadr` workflow. To see how `leadr` supports more advanced ensemble model building, check out my other vignette. 
+
+## Getting Started
+
+I usually start with these packages.
+
+```{r}
+library(purrr)
+library(tidyverse)
+library(caret)
+library(leadr)
+```
+
+Let's build some models. We can easily build a list of models using `purrr::map`.
+
+```{r}
+models <- map(
+  rep("rf", 4),
+  ~train(
+    Species ~ .,
+    data = iris
+  )
+)
+```
+
+We can also `purrr` the models into our leaderboard. This time we use `purrr::walk` since want to update the leaderboard, but don't care about the return value. 
+
+```{r}
+walk(models, board)
+board()
+```
+
+By default, `board` saves the models into a folder at the root of the project called `models_one` and returns a tibble that provides us with everything we want to know about the model. 
+
+The tibble gives us the ranking and metric score, as well as lists like `tune`, `index`, and `seed` that allow us to exactly recreate the model. 
+
+## Groups
+
+Of course, fitting four random forest models isn't very realistic. The idea is that we can fit many different types of models. Let's try a different type of model, using the same index as the first model:
+
+```{r}
+first_id <- which(board()$id == 1)
+control <- trainControl(index = board()$index[[first_id]])
+model <- train(Species ~ ., data = iris, method = 'glmnet', trControl = control)
+board(model)
+```
+
+Fitting the model on the same bootstrap or cross-validation index allows us to compare models using some caret functions. The `group` column indicates which models are fit on the same index, and we'll use `leadr::to_list()` to covert the filtered leaderboard to a list of models.
+
+```{r}
+group <- board() %>% 
+  filter(group == 1) %>%
+  to_list()
+```
+
+From there, we can compare models using the `resamples` family of caret functions:
+
+```{r, fig.align='center'}
+results <- resamples(group)
+summary(results)
+
+modelCor(results)
+splom(results)
+```
+
+## Peaking
+
+`leadr` also has tools to help you find ranking of models as the leaderboard gets big. Let's add a few more models:
+
+```{r}
+models <- map(
+  rep("rf", 20),
+  ~train(
+    Species ~ .,
+    data = iris
+  )
+)
+
+walk(models, board)
+board()
+```
+
+We can no longer see every model on the leaderboard. That's where `leadr::peak` helps out. Let's look at the ranking of the first model:
+
+```{r}
+board() %>%
+  peak(1)
+```
+
+Often, we want to see how the model we just ran ranks:
+
+```{r}
+board() %>%
+  peak(at_last())
+```
+
+`leadr::peak` also takes a variable number of inputs. If we want to compare the last to the first model, it will return the smallest tibble that contains both. If it is under 20 rows, it will print the entire tibble.
+
+```{r}
+board() %>%
+  peak(at_last(), 1)
+```
+
+Thanks to [pillar](https://github.com/r-lib/pillar) and [crayon](https://github.com/r-lib/crayon), `leadr::peak` also has special printing capabilities when used in a supported console. Here is an example of `peak` in the RStudio console. Notice that it highlights the peaked models in the output.
+
+```{r fig.align='center'}
+knitr::include_graphics("leadr_pic.png")
+```
+
+
+
+
+

@@ -14,7 +14,9 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Suggests: 
-    testthat
+    testthat,
+    knitr,
+    rmarkdown
 Imports: 
     dplyr,
     caret,
@@ -27,3 +29,4 @@ Imports:
     here
 Remotes: tidyverse/magrittr
 RoxygenNote: 6.0.1.9000
+VignetteBuilder: knitr
