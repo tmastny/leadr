@@ -2,7 +2,7 @@ Package: leadr
 Type: Package
 Title: Personal Leaderboards for Machine Learning
 Version: 0.1.0
-Author: Timothy Mastny
+Authors@R: person("Tim", "Mastny", role = c("aut", "cre"), email = "tim.mastny@gmail.com")
 Maintainer: <tim.mastny@gmail.com>
 URL: http://github.com/tmastny/leadr
 BugReports: http://github.com/tmastny/leadr/issues
