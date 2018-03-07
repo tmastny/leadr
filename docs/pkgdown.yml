@@ -81,7 +81,7 @@ articles:
 
 navbar:
   title: "leadr"
-  right:
+  left:
     - text: "leadr"
       href: index.html
     - text: "Reference"
