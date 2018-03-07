@@ -75,6 +75,9 @@ to_list returns every model in a list." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
+      <a href="../articles/ensemble.html">Ensembles</a>
+    </li>
+    <li>
       <a href="../articles/introduction.html">Introduction</a>
     </li>
   </ul>
@@ -127,7 +130,8 @@ from <code><a href='board.html'>board</a></code></p></td>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>model_list</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='board.html'>board</a></span>() <span class='kw'>%&gt;%</span>
   <span class='fu'>filter</span>(<span class='no'>group</span> <span class='kw'>==</span> <span class='fl'>1</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'>to_list</span>()</div></pre>
+  <span class='fu'>to_list</span>()</div><div class='output co'>#&gt; <span class='warning'>Warning: NAs introduced by coercion</span></div><div class='output co'>#&gt; <span class='warning'>Warning: NAs introduced by coercion</span></div><div class='output co'>#&gt; <span class='warning'>Warning: NAs introduced by coercion</span></div><div class='output co'>#&gt; <span class='warning'>Warning: NAs introduced by coercion</span></div><div class='output co'>#&gt; <span class='error'>Error in data.matrix(data): (list) object cannot be coerced to type 'double'</span></div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
