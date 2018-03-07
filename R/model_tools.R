@@ -29,18 +29,21 @@ caret_seed <- function(seed = 1, number) {
 #' to make stacked or blended ensembles. See this vignette for more
 #' details.
 #'
-#' @param seed starting seed for list of seeds
-#' @param number number of folds or resamples
+#' @param models A model or list of models to get the predictions
+#' @param type the results of the prediction. For classification models,
+#' \code{"raw"} returns the outcome label and \code{"prob"} returns the
+#' label probabilities.
 #'
-#' @return tibble or list of tibbles with out of fold predictions
-#' for each model.
+#' @return a tibble with one column per model and a column of the training data
+#' outcomes. If \code{type = "prob"} there will be n columns per model, where
+#' n is the number of labels in the outcome.
 #'
 #' @examples
-#' trainControl(method = 'cv', number = 10, seeds = caret_seed(1234, 10))
+#' oofs <- oof_grab(model_list)
 #'
 #' @importFrom magrittr %>%
 #' @export
-oof_grab <- function(models, train_data, type = 'raw') {
+oof_grab <- function(models, type = "raw") {
   if (inherits(models, "train")) models <- list(models)
 
   agg_data <- purrr::map_dfc(models, grabber, type)
