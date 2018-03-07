@@ -8,16 +8,12 @@ test_that("Model is saved to directory", {
   unlink(here::here("models_one"), recursive = TRUE)
   unlink(here::here("leadrboard.RDS"))
 
-  folds <- 5
-  seeds <- caret_seed(number = folds)
-
   control <- trainControl(
     method = "cv",
-    number = folds,
+    number = 5,
     savePredictions = 'final',
     returnResamp = 'final',
-    classProbs = TRUE,
-    seeds = seeds
+    classProbs = TRUE
   )
 
   model <- train(
@@ -34,16 +30,14 @@ test_that("Model is saved to directory", {
 })
 
 test_that("Next model", {
-  folds <- 5
-  seeds <- caret_seed(number = folds)
 
+  index <- board()$index[[1]]
   control <- trainControl(
     method = "cv",
-    number = folds,
+    index = index,
     savePredictions = 'final',
     returnResamp = 'final',
-    classProbs = TRUE,
-    seeds = seeds
+    classProbs = TRUE
   )
 
   model <- train(

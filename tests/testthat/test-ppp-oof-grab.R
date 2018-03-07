@@ -49,28 +49,24 @@ test_that("oof_grab throws an error if savePredictions = 'none'", {
 })
 
 test_that("oof_grab grabs best predictions if savePredictions = 'all'", {
-  seeds <- caret_seed(number = 5)
-
-  control1 = trainControl(method = 'cv', number = 5, savePredictions = 'all',
-                         seeds = seeds)
+  control1 = trainControl(method = 'cv', number = 5, savePredictions = 'all')
+  set.seed(123)
   m1 <- train(Species ~ ., data = iris, method = 'rf', trControl = control1)
 
-  control2 = trainControl(method = 'cv', number = 5, savePredictions = 'final',
-                          seeds = seeds)
+  control2 = trainControl(method = 'cv', number = 5, savePredictions = 'final')
+  set.seed(123)
   m2 <- train(Species ~ ., data = iris, method = 'rf', trControl = control2)
 
   expect_identical(oof_grab(m1), oof_grab(m2))
 })
 
 test_that("oof_grab grabs the best predictions if there are multiple tuning parameters", {
-  seeds <- caret_seed(number = 5)
-
-  control1 = trainControl(method = 'cv', number = 5, savePredictions = 'all',
-                          seeds = seeds)
+  control1 = trainControl(method = 'cv', number = 5, savePredictions = 'all')
+  set.seed(456)
   m1 <- train(Species ~ ., data = iris, method = 'glmnet', trControl = control1)
 
-  control2 = trainControl(method = 'cv', number = 5, savePredictions = 'final',
-                          seeds = seeds)
+  control2 = trainControl(method = 'cv', number = 5, savePredictions = 'final')
+  set.seed(456)
   m2 <- train(Species ~ ., data = iris, method = 'glmnet', trControl = control2)
 
   expect_identical(oof_grab(m1), oof_grab(m2))

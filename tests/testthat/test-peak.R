@@ -56,8 +56,8 @@ test_that("The peaked leaderboard returns all specified models", {
   peaked <- board() %>%
     peak(2, 22)
 
-  expect_true(any(peaked$id == 1))
-  expect_true(any(peaked$id == 9))
+  expect_true(any(peaked$id == 2))
+  expect_true(any(peaked$id == 22))
 
   peaked <- board() %>%
     peak(c(19, 8))

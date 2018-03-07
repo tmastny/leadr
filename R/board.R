@@ -102,9 +102,9 @@ new_leadrboard <- function() {
     public = numeric(),
     method = character(),
     num = integer(),
-    resample = integer(),
-    tune = list(),
-    seed = list()
+    group = integer(),
+    index = list(),
+    tune = list()
   )
 }
 
@@ -120,21 +120,21 @@ add_to <- function(leadrboard, model, id, dir) {
     new_row$score = max(model$results[,model$metric])
     new_row$method = model$control$method
     new_row$num = model$control$number
-    new_row$resample= NA
-    new_row$tune = list(as.list(model$bestTune))
-    new_row$seed = list(model$control$seeds)
+    new_row$group = NA
+    new_row$index = list(model$control$index)
+    new_row$tune = list(model$bestTune)
   } else {
     stop("leadr only supports caret train objects (so far).")
   }
 
-  matched <- purrr::map_lgl(leadrboard$seed, ~identical(list(.), new_row$seed))
+  matched <- purrr::map_lgl(leadrboard$index, ~identical(list(.), new_row$index))
   if (any(matched)) {
-    new_row$resample <- leadrboard$resample[which(matched)][1]
+    new_row$group <- leadrboard$group[which(matched)][1]
   } else {
     if (!(nrow(leadrboard) > 0)) {
-      new_row$resample <- 1
+      new_row$group <- 1
     } else {
-      new_row$resample <- max(leadrboard$resample) + 1
+      new_row$group <- max(leadrboard$group) + 1
     }
   }
 
