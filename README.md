@@ -70,6 +70,6 @@ Vignettes
 
 For a full description of the features, check out my vignettes hosted here:
 
-1.  Introduction: walkthrough of the basic workflow of leadr
+1.  [Introduction](https://tmastny.github.io/leadr/articles/introduction.html): walkthrough of the basic workflow of leadr
 
-2.  The Leaderboard: a description of each column of the leaderboard
+2.  Ensembles: overview of the tools that leadr provides to make ensemble models
