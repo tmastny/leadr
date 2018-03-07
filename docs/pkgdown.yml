@@ -1,0 +1,44 @@
+pandoc: 1.19.2.1
+pkgdown: 0.1.0.9000
+pkgdown_sha: 17f683717d0a1547f13a08a259b34c58927452d6
+articles:
+  introduction: introduction.html
+  __packages: introduction_cache/html/__packages
+  unnamed-chunk-10_e32bd93670fd907f966f3b90d1f2242e.RData: introduction_cache/html/unnamed-chunk-10_e32bd93670fd907f966f3b90d1f2242e.RData
+  unnamed-chunk-10_e32bd93670fd907f966f3b90d1f2242e.rdb: introduction_cache/html/unnamed-chunk-10_e32bd93670fd907f966f3b90d1f2242e.rdb
+  unnamed-chunk-10_e32bd93670fd907f966f3b90d1f2242e.rdx: introduction_cache/html/unnamed-chunk-10_e32bd93670fd907f966f3b90d1f2242e.rdx
+  unnamed-chunk-11_eec70c76386901520fa87fb817bc6248.RData: introduction_cache/html/unnamed-chunk-11_eec70c76386901520fa87fb817bc6248.RData
+  unnamed-chunk-11_eec70c76386901520fa87fb817bc6248.rdb: introduction_cache/html/unnamed-chunk-11_eec70c76386901520fa87fb817bc6248.rdb
+  unnamed-chunk-11_eec70c76386901520fa87fb817bc6248.rdx: introduction_cache/html/unnamed-chunk-11_eec70c76386901520fa87fb817bc6248.rdx
+  unnamed-chunk-12_96bf2dd83930e1cad0b68b910a9eee2f.RData: introduction_cache/html/unnamed-chunk-12_96bf2dd83930e1cad0b68b910a9eee2f.RData
+  unnamed-chunk-12_96bf2dd83930e1cad0b68b910a9eee2f.rdb: introduction_cache/html/unnamed-chunk-12_96bf2dd83930e1cad0b68b910a9eee2f.rdb
+  unnamed-chunk-12_96bf2dd83930e1cad0b68b910a9eee2f.rdx: introduction_cache/html/unnamed-chunk-12_96bf2dd83930e1cad0b68b910a9eee2f.rdx
+  unnamed-chunk-1_ff3e00567805a868c4190777063eab00.RData: introduction_cache/html/unnamed-chunk-1_ff3e00567805a868c4190777063eab00.RData
+  unnamed-chunk-1_ff3e00567805a868c4190777063eab00.rdb: introduction_cache/html/unnamed-chunk-1_ff3e00567805a868c4190777063eab00.rdb
+  unnamed-chunk-1_ff3e00567805a868c4190777063eab00.rdx: introduction_cache/html/unnamed-chunk-1_ff3e00567805a868c4190777063eab00.rdx
+  unnamed-chunk-2_a782d8ffa3d171b6551f95fb031ed923.RData: introduction_cache/html/unnamed-chunk-2_a782d8ffa3d171b6551f95fb031ed923.RData
+  unnamed-chunk-2_a782d8ffa3d171b6551f95fb031ed923.rdb: introduction_cache/html/unnamed-chunk-2_a782d8ffa3d171b6551f95fb031ed923.rdb
+  unnamed-chunk-2_a782d8ffa3d171b6551f95fb031ed923.rdx: introduction_cache/html/unnamed-chunk-2_a782d8ffa3d171b6551f95fb031ed923.rdx
+  unnamed-chunk-3_146b80a271bdc071dc16d2802aaac1d0.RData: introduction_cache/html/unnamed-chunk-3_146b80a271bdc071dc16d2802aaac1d0.RData
+  unnamed-chunk-3_146b80a271bdc071dc16d2802aaac1d0.rdb: introduction_cache/html/unnamed-chunk-3_146b80a271bdc071dc16d2802aaac1d0.rdb
+  unnamed-chunk-3_146b80a271bdc071dc16d2802aaac1d0.rdx: introduction_cache/html/unnamed-chunk-3_146b80a271bdc071dc16d2802aaac1d0.rdx
+  unnamed-chunk-4_995b8e0e2009802795f50e9ac09920d1.RData: introduction_cache/html/unnamed-chunk-4_995b8e0e2009802795f50e9ac09920d1.RData
+  unnamed-chunk-4_995b8e0e2009802795f50e9ac09920d1.rdb: introduction_cache/html/unnamed-chunk-4_995b8e0e2009802795f50e9ac09920d1.rdb
+  unnamed-chunk-4_995b8e0e2009802795f50e9ac09920d1.rdx: introduction_cache/html/unnamed-chunk-4_995b8e0e2009802795f50e9ac09920d1.rdx
+  unnamed-chunk-5_a1d7173a4d4d843ee78c2ecb0ad0908f.RData: introduction_cache/html/unnamed-chunk-5_a1d7173a4d4d843ee78c2ecb0ad0908f.RData
+  unnamed-chunk-5_a1d7173a4d4d843ee78c2ecb0ad0908f.rdb: introduction_cache/html/unnamed-chunk-5_a1d7173a4d4d843ee78c2ecb0ad0908f.rdb
+  unnamed-chunk-5_a1d7173a4d4d843ee78c2ecb0ad0908f.rdx: introduction_cache/html/unnamed-chunk-5_a1d7173a4d4d843ee78c2ecb0ad0908f.rdx
+  unnamed-chunk-6_1b23d1221b5b3130f6ee5ab4aec2516b.RData: introduction_cache/html/unnamed-chunk-6_1b23d1221b5b3130f6ee5ab4aec2516b.RData
+  unnamed-chunk-6_1b23d1221b5b3130f6ee5ab4aec2516b.rdb: introduction_cache/html/unnamed-chunk-6_1b23d1221b5b3130f6ee5ab4aec2516b.rdb
+  unnamed-chunk-6_1b23d1221b5b3130f6ee5ab4aec2516b.rdx: introduction_cache/html/unnamed-chunk-6_1b23d1221b5b3130f6ee5ab4aec2516b.rdx
+  unnamed-chunk-7_c15c653065f9833b39bd21d4eaec33ae.RData: introduction_cache/html/unnamed-chunk-7_c15c653065f9833b39bd21d4eaec33ae.RData
+  unnamed-chunk-7_c15c653065f9833b39bd21d4eaec33ae.rdb: introduction_cache/html/unnamed-chunk-7_c15c653065f9833b39bd21d4eaec33ae.rdb
+  unnamed-chunk-7_c15c653065f9833b39bd21d4eaec33ae.rdx: introduction_cache/html/unnamed-chunk-7_c15c653065f9833b39bd21d4eaec33ae.rdx
+  unnamed-chunk-8_1a70761821128c9d23c5c04eb08c11ee.RData: introduction_cache/html/unnamed-chunk-8_1a70761821128c9d23c5c04eb08c11ee.RData
+  unnamed-chunk-8_1a70761821128c9d23c5c04eb08c11ee.rdb: introduction_cache/html/unnamed-chunk-8_1a70761821128c9d23c5c04eb08c11ee.rdb
+  unnamed-chunk-8_1a70761821128c9d23c5c04eb08c11ee.rdx: introduction_cache/html/unnamed-chunk-8_1a70761821128c9d23c5c04eb08c11ee.rdx
+  unnamed-chunk-9_628b0d5aac87920c4cd31e0762959faa.RData: introduction_cache/html/unnamed-chunk-9_628b0d5aac87920c4cd31e0762959faa.RData
+  unnamed-chunk-9_628b0d5aac87920c4cd31e0762959faa.rdb: introduction_cache/html/unnamed-chunk-9_628b0d5aac87920c4cd31e0762959faa.rdb
+  unnamed-chunk-9_628b0d5aac87920c4cd31e0762959faa.rdx: introduction_cache/html/unnamed-chunk-9_628b0d5aac87920c4cd31e0762959faa.rdx
+  leadr_pic.png: leadr_pic.png
+
