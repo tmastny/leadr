@@ -27,6 +27,8 @@ unlink(here::here('models_one'), recursive = TRUE)
 
 This vignette will show the basic `leadr` workflow. To see how `leadr` supports more advanced ensemble model building, check out my other vignette. 
 
+`leadr` is intended to be used within a R project for one dataset. Currently, the leaderboard works best placed at the project root, with any number of subdirectories to save the models.
+
 ## Getting Started
 
 I usually start with these packages.
@@ -130,7 +132,7 @@ board() %>%
 
 Thanks to [pillar](https://github.com/r-lib/pillar) and [crayon](https://github.com/r-lib/crayon), `leadr::peak` also has special printing capabilities when used in a supported console. Here is an example of `peak` in the RStudio console. Notice that it highlights the peaked models in the output.
 
-```{r echo='FALSE', fig.align='center'}
+```{r echo=FALSE, fig.align='center'}
 knitr::include_graphics("leadr_pic.png")
 ```
 
