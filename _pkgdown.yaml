@@ -7,3 +7,5 @@ navbar:
       href: articles/introduction.html
     - text: "Ensembles"
       href: articles/ensemble.html
+    - text: "Reference"
+      href: reference/index.html
