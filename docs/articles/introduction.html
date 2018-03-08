@@ -85,6 +85,7 @@
     
 <div class="contents">
 <p>This vignette will show the basic <code>leadr</code> workflow. To see how <code>leadr</code> supports more advanced ensemble model building, check out my other vignette.</p>
+<p><code>leadr</code> is intended to be used within a R project for one dataset. Currently, the leaderboard works best placed at the project root, with any number of subdirectories to save the models.</p>
 <div id="getting-started" class="section level2">
 <h2 class="hasAnchor">
 <a href="#getting-started" class="anchor"></a>Getting Started</h2>
@@ -243,7 +244,6 @@ model &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocume
 <span class="co">#&gt; 10   10.     5 models… glmn… Accur… 0.952     NA boot     25.    1. &lt;list…</span>
 <span class="co">#&gt; # ... with 13 more rows, and 2 more variables: tune &lt;list&gt;, seeds &lt;list&gt;</span></code></pre></div>
 <p>Thanks to <a href="https://github.com/r-lib/pillar">pillar</a> and <a href="https://github.com/r-lib/crayon">crayon</a>, <code><a href="../reference/peak.html">leadr::peak</a></code> also has special printing capabilities when used in a supported console. Here is an example of <code>peak</code> in the RStudio console. Notice that it highlights the peaked models in the output.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">knitr<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/knitr/topics/include_graphics">include_graphics</a></span>(<span class="st">"leadr_pic.png"</span>)</code></pre></div>
 <p><img src="leadr_pic.png" width="676" style="display: block; margin: auto;"></p>
 </div>
 </div>
