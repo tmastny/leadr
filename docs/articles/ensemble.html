@@ -69,28 +69,27 @@
       <h1>Ensembles</h1>
                         <h4 class="author">Tim Mastny</h4>
             
-            <h4 class="date">2018-03-07</h4>
+            <h4 class="date">2018-03-08</h4>
           </div>
 
     
     
 <div class="contents">
-<p>This vignette demonstrates advanced features of <code>leadr</code>, applied to building an ensemble.</p>
+<p>This vignette demonstrates how <code>leadr</code> improves the ensemble building workflow, and introduces some special ensemble building tools included in the package.</p>
 <div id="ensembles" class="section level2">
 <h2 class="hasAnchor">
 <a href="#ensembles" class="anchor"></a>Ensembles</h2>
-<p>Ensembles come in two flavors<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>. The first idea is an averaging ensemble.</p>
+<p>Let’s talk about two ensemble types<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>. The first is the averaging ensemble.</p>
 <p><img src="model%20averaging.png" width="648" style="display: block; margin: auto;"></p>
-<p>A set of models make predictions, and you average the predictions (or possibly the classification probabilities).</p>
+<p>A set of models make predictions, and you average the predictions (or possibly the classification probabilities) to try to decrease the error.</p>
 <p>Empirically, a better technique is blended or stacked ensembles:</p>
 <p><img src="blended.png" width="648" style="display: block; margin: auto;"></p>
-<p>Here, data is split into k-folds. The model is trained on k-1 folds, then evaluated on each holdout. Combined, each holdout set recovers the original data set. Therefore, the holdout predictions form the new ensemble feature.</p>
-<p><code>leadr</code> has some basic tools that help build these type of blended models.</p>
+<p>Here, data is split into k-folds. The model is trained on each k-1 fold, and then evaluated on each holdout. Combined, each holdout set recovers the original data set. Then those holdout predictions are now a new feature to build included in an overall ensemble.</p>
 </div>
 <div id="the-task" class="section level2">
 <h2 class="hasAnchor">
 <a href="#the-task" class="anchor"></a>The Task</h2>
-<p>We will build an ensemble for the iris dataset, which is a multiclass classification dataset. Other packages such as <a href="https://github.com/zachmayer/caretEnsemble">caretEnsemble</a> do not yet <a href="https://github.com/zachmayer/caretEnsemble/pull/191">support</a> multiclass ensembles. <code>leadr</code> fills this niche nicely.</p>
+<p>Let’s build an ensemble for the iris dataset, which is a multiclass classification dataset. Other packages such as <a href="https://github.com/zachmayer/caretEnsemble">caretEnsemble</a> do not yet <a href="https://github.com/zachmayer/caretEnsemble/pull/191">support</a> multiclass ensembles, but <code>leadr</code> provides some tools to handle this situation.</p>
 <p>First, let’s build a list of models.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(purrr)
 <span class="kw">library</span>(caret)
@@ -132,8 +131,8 @@ ensemble_list &lt;-<span class="st"> </span><span class="kw"><a href="http://www
 <h2 class="hasAnchor">
 <a href="#submodel-selection" class="anchor"></a>Submodel Selection</h2>
 <p>We also want to evaluate the models that go into our ensemble. In general, we want to use two different criteria.</p>
-<p>First, we want to maximize accuracy, as measured by the 5-fold cross-validation that we build our models on. Second, we want to minimize the prediction correlation. Suppose two sets of model predictions have similar accuracy scores, are not very correlated. This means that each model learned something different about the dataset, and would likely benefit from an ensemble.</p>
-<p><code>caret</code> offers some nice tools to see these criteria:</p>
+<p>First, we want to maximize accuracy, as measured by the 5-fold cross-validation that we build our models on. Second, we want to minimize the prediction correlation. Suppose two sets of model predictions have similar accuracy scores, but are not correlated. This means that each model learned something different about the dataset, and an ensemble could combine those different understandings.</p>
+<p>Here are some <code>caret</code> functions to look at those criteria:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">results &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/caret/topics/resamples">resamples</a></span>(models)
 <span class="kw">summary</span>(results)
 <span class="co">#&gt; </span>
@@ -165,8 +164,8 @@ ensemble_list &lt;-<span class="st"> </span><span class="kw"><a href="http://www
 <span class="co">#&gt; knn    0.9355852 0.6416889 0.9861169 1.0000000</span>
 <span class="kw">splom</span>(results)</code></pre></div>
 <p><img src="ensemble_files/figure-html/unnamed-chunk-8-1.png" width="672"></p>
-<p>Some of our models are very correlated, which is to be expected for a simple data set.</p>
-<p>The next step as described in the introductory diagram, is to create a new feature for each model from the out of fold predictions. <code>leadr</code> has a nice helper function for this:</p>
+<p>Some of our models are correlated, which is to be expected for a simple data set.</p>
+<p>The next step as described in the introductory diagram, is to create a new feature for each model from the out of fold predictions. <code><a href="../reference/oof_grab.html">leadr::oof_grab</a></code> does this automatically:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">blended &lt;-<span class="st"> </span><span class="kw"><a href="../reference/oof_grab.html">oof_grab</a></span>(models)
 blended
 <span class="co">#&gt; # A tibble: 150 x 5</span>
@@ -216,6 +215,11 @@ ensemble
 <span class="co">#&gt; 5    5.     3 models… rpart  Accur… 0.947     NA cv       10.    1. &lt;list…</span>
 <span class="co">#&gt; # ... with 2 more variables: tune &lt;list&gt;, seeds &lt;list&gt;</span></code></pre></div>
 </div>
+<div id="conclusions" class="section level2">
+<h2 class="hasAnchor">
+<a href="#conclusions" class="anchor"></a>Conclusions</h2>
+<p><code>leadr</code> provides some tools to help build the ensemble, as well as keeping track of the results. We can also use the <code>dir</code> argument of <code><a href="../reference/board.html">leadr::board</a></code> to create natural groupings in the leaderboard, such as base models versus ensembles.</p>
+</div>
 <div class="footnotes">
 <hr>
 <ol>
@@ -233,6 +237,7 @@ ensemble
 <li><a href="#ensembles">Ensembles</a></li>
       <li><a href="#the-task">The Task</a></li>
       <li><a href="#submodel-selection">Submodel Selection</a></li>
+      <li><a href="#conclusions">Conclusions</a></li>
       </ul>
 </div>
       </div>

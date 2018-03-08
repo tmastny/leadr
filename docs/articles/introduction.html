@@ -69,18 +69,17 @@
       <h1>Introduction</h1>
                         <h4 class="author">Tim Mastny</h4>
             
-            <h4 class="date">2018-03-07</h4>
+            <h4 class="date">2018-03-08</h4>
           </div>
 
     
     
 <div class="contents">
-<p>This vignette will show the basic <code>leadr</code> workflow. To see how <code>leadr</code> supports more advanced ensemble model building, check out my other vignette.</p>
-<p><code>leadr</code> is intended to be used within an R project for one dataset. Currently, the leaderboard works best placed at the project root, with any number of subdirectories to save the models.</p>
+<p>This vignette will show the basics of the <code>leadr</code> workflow. To see how <code>leadr</code> supports more advanced ensemble model building, check out my Ensembles <a href="https://tmastny.github.io/leadr/articles/ensemble.html">vignette</a>.</p>
+<p><code>leadr</code> is designed to create one leaderboard per R project per dataset. Currently, the leaderboard works best placed at the project root, with any number of subdirectories to save the models.</p>
 <div id="getting-started" class="section level2">
 <h2 class="hasAnchor">
 <a href="#getting-started" class="anchor"></a>Getting Started</h2>
-<p>I usually start with these packages.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(purrr)
 <span class="kw">library</span>(tidyverse)
 <span class="kw">library</span>(caret)
@@ -93,7 +92,7 @@
     <span class="dt">data =</span> iris
   )
 )</code></pre></div>
-<p>We can also <code>purrr</code> the models into our leaderboard. This time we use <code><a href="http://www.rdocumentation.org/packages/purrr/topics/map">purrr::walk</a></code> since want to update the leaderboard, but don’t care about the return value.</p>
+<p>We can also <code>purrr</code> the models into our leaderboard. This time we use <code><a href="http://www.rdocumentation.org/packages/purrr/topics/map">purrr::walk</a></code> to update the leaderboard while returning quietly.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="http://www.rdocumentation.org/packages/purrr/topics/map">walk</a></span>(models, board)
 <span class="kw"><a href="../reference/board.html">board</a></span>()
 <span class="co">#&gt; # A tibble: 4 x 13</span>
@@ -105,12 +104,12 @@
 <span class="co">#&gt; 4    4.     1 models… rf    Accura… 0.942     NA boot     25.    1. &lt;list…</span>
 <span class="co">#&gt; # ... with 2 more variables: tune &lt;list&gt;, seeds &lt;list&gt;</span></code></pre></div>
 <p>By default, <code>board</code> saves the models into a folder at the root of the project called <code>models_one</code> and returns a tibble that provides us with everything we want to know about the model.</p>
-<p>The tibble gives us the ranking and metric score, as well as lists like <code>tune</code>, <code>index</code>, and <code>seed</code> that allow us to exactly recreate the model.</p>
+<p>The tibble gives us the ranking and metric score, as well as lists like <code>tune</code>, <code>index</code>, and <code>seeds</code> that allow us to exactly recreate the model.</p>
 </div>
 <div id="groups" class="section level2">
 <h2 class="hasAnchor">
 <a href="#groups" class="anchor"></a>Groups</h2>
-<p>Of course, fitting four random forest models isn’t very realistic. The idea is that we can fit many different types of models. Let’s try a different type of model, using the same index as the first model:</p>
+<p>Of course, fitting four random forest models on the same dataset isn’t very realistic. We’d like to fit a variety of models and compare the accuracy. Let’s use the <code>index</code> column of the leaderboard to fit a new model on the same bootstrap resamples as the first model.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">first_id &lt;-<span class="st"> </span><span class="kw">which</span>(<span class="kw"><a href="../reference/board.html">board</a></span>()<span class="op">$</span>id <span class="op">==</span><span class="st"> </span><span class="dv">1</span>)
 control &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/caret/topics/trainControl">trainControl</a></span>(<span class="dt">index =</span> <span class="kw"><a href="../reference/board.html">board</a></span>()<span class="op">$</span>index[[first_id]])
 model &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/caret/topics/train">train</a></span>(Species <span class="op">~</span><span class="st"> </span>., <span class="dt">data =</span> iris, <span class="dt">method =</span> <span class="st">'glmnet'</span>, <span class="dt">trControl =</span> control)
@@ -124,11 +123,11 @@ model &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocume
 <span class="co">#&gt; 4    4.     3 models… rf     Accur… 0.946     NA boot     25.    3. &lt;list…</span>
 <span class="co">#&gt; 5    5.     1 models… rf     Accur… 0.942     NA boot     25.    1. &lt;list…</span>
 <span class="co">#&gt; # ... with 2 more variables: tune &lt;list&gt;, seeds &lt;list&gt;</span></code></pre></div>
-<p>Fitting the model on the same bootstrap or cross-validation index allows us to compare models using some caret functions. The <code>group</code> column indicates which models are fit on the same index, and we’ll use <code><a href="../reference/to_list.html">leadr::to_list()</a></code> to covert the filtered leaderboard to a list of models.</p>
+<p><code>caret</code> has a nice set of functions to compare models trained on the same bootstrap or cross-validation index. To find these comparable models, we can filter on the <code>group</code> column and use <code><a href="../reference/to_list.html">leadr::to_list()</a></code> to convert the filtered leaderboard to a list of models.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">group &lt;-<span class="st"> </span><span class="kw"><a href="../reference/board.html">board</a></span>() <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">filter</span>(group <span class="op">==</span><span class="st"> </span><span class="dv">1</span>) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw"><a href="../reference/to_list.html">to_list</a></span>()</code></pre></div>
-<p>From there, we can compare models using the <code>resamples</code> family of caret functions:</p>
+<p>From there, we can compare models using the <code>resamples</code> family of <code>caret</code> functions:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">results &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/caret/topics/resamples">resamples</a></span>(group)
 <span class="kw">summary</span>(results)
 <span class="co">#&gt; </span>
@@ -158,7 +157,7 @@ model &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocume
 <div id="peaking" class="section level2">
 <h2 class="hasAnchor">
 <a href="#peaking" class="anchor"></a>Peaking</h2>
-<p><code>leadr</code> also has tools to help you find ranking of models as the leaderboard gets big. Let’s add a few more models:</p>
+<p><code>leadr</code> also has tools to help you evaluate model ranking as the leaderboard gets big. Let’s add a few more models:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">models &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/purrr/topics/map">map</a></span>(
   <span class="kw">rep</span>(<span class="st">"rf"</span>, <span class="dv">20</span>),
   <span class="op">~</span><span class="kw"><a href="http://www.rdocumentation.org/packages/caret/topics/train">train</a></span>(
@@ -183,7 +182,7 @@ model &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocume
 <span class="co">#&gt;  9    9.    17 models… rf    Accur… 0.952     NA boot     25.   16. &lt;list…</span>
 <span class="co">#&gt; 10   10.     5 models… glmn… Accur… 0.952     NA boot     25.    1. &lt;list…</span>
 <span class="co">#&gt; # ... with 15 more rows, and 2 more variables: tune &lt;list&gt;, seeds &lt;list&gt;</span></code></pre></div>
-<p>We can no longer see every model on the leaderboard. That’s where <code><a href="../reference/peak.html">leadr::peak</a></code> helps out. Let’s look at the ranking of the first model:</p>
+<p>By default the <code>tibble</code> package prints at most 20 rows and only 10 rows for larger tibbles. With <code><a href="../reference/peak.html">leadr::peak</a></code>, we can peak at the ranking of the first model and those in the surrounding positions:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/board.html">board</a></span>() <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw"><a href="../reference/peak.html">peak</a></span>(<span class="dv">1</span>)
 <span class="co">#&gt; # A tibble: 10 x 13</span>
@@ -200,7 +199,7 @@ model &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocume
 <span class="co">#&gt;  9   24.    13 models… rf    Accur… 0.939     NA boot     25.   12. &lt;list…</span>
 <span class="co">#&gt; 10   25.    18 models… rf    Accur… 0.938     NA boot     25.   17. &lt;list…</span>
 <span class="co">#&gt; # ... with 2 more variables: tune &lt;list&gt;, seeds &lt;list&gt;</span></code></pre></div>
-<p>Often, we want to see how the model we just ran ranks:</p>
+<p>We also peak at the last model ran:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/board.html">board</a></span>() <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw"><a href="../reference/peak.html">peak</a></span>(<span class="kw"><a href="../reference/at_last.html">at_last</a></span>())
 <span class="co">#&gt; # A tibble: 10 x 13</span>
@@ -217,7 +216,7 @@ model &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocume
 <span class="co">#&gt;  9    9.    17 models… rf    Accur… 0.952     NA boot     25.   16. &lt;list…</span>
 <span class="co">#&gt; 10   10.     5 models… glmn… Accur… 0.952     NA boot     25.    1. &lt;list…</span>
 <span class="co">#&gt; # ... with 2 more variables: tune &lt;list&gt;, seeds &lt;list&gt;</span></code></pre></div>
-<p><code><a href="../reference/peak.html">leadr::peak</a></code> also takes a variable number of inputs. If we want to compare the last to the first model, it will return the smallest tibble that contains both. If it is under 20 rows, it will print the entire tibble.</p>
+<p><code><a href="../reference/peak.html">leadr::peak</a></code> also takes a variable number of inputs. If we want to compare the last model to the first model, it will return the smallest tibble that contains both. If it is 20 rows or under, it will print the entire tibble.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/board.html">board</a></span>() <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw"><a href="../reference/peak.html">peak</a></span>(<span class="kw"><a href="../reference/at_last.html">at_last</a></span>(), <span class="dv">1</span>)
 <span class="co">#&gt; # A tibble: 23 x 13</span>
@@ -234,7 +233,7 @@ model &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocume
 <span class="co">#&gt;  9    9.    17 models… rf    Accur… 0.952     NA boot     25.   16. &lt;list…</span>
 <span class="co">#&gt; 10   10.     5 models… glmn… Accur… 0.952     NA boot     25.    1. &lt;list…</span>
 <span class="co">#&gt; # ... with 13 more rows, and 2 more variables: tune &lt;list&gt;, seeds &lt;list&gt;</span></code></pre></div>
-<p>Thanks to <a href="https://github.com/r-lib/pillar">pillar</a> and <a href="https://github.com/r-lib/crayon">crayon</a>, <code><a href="../reference/peak.html">leadr::peak</a></code> also has special printing capabilities when used in a supported console. Here is an example of <code>peak</code> in the RStudio console. Notice that it highlights the peaked models in the output.</p>
+<p>Thanks to <a href="https://github.com/r-lib/pillar">pillar</a> and <a href="https://github.com/r-lib/crayon">crayon</a>, <code><a href="../reference/peak.html">leadr::peak</a></code> also has special printing when used in a supported console. Here is an example of <code>peak</code> in the RStudio console. Notice that it highlights the peaked models in the console output.</p>
 <p><img src="leadr_pic.png" width="676" style="display: block; margin: auto;"></p>
 </div>
 </div>
