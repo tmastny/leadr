@@ -1,0 +1,9 @@
+navbar:
+  title: "leadr"
+  left:
+    - icon: fa-home
+      href: index.html
+    - text: "Introduction"
+      href: articles/introduction.html
+    - text: "Ensembles"
+      href: articles/ensemble.html
