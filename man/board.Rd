@@ -35,7 +35,10 @@ the model to the leaderboard without printing the tibble.}
 }
 \description{
 This function updates and returns
-the model leaderboard for the project.
+the model leaderboard for the project. Please read the
+\link{https://github.com/tmastny/leadr}[README] and the
+introduction
+\link{https://tmastny.github.io/leadr/articles/introduction.html}[vignette].
 }
 \examples{
 # add caret model to leaderboard
