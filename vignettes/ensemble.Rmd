@@ -24,17 +24,17 @@ unlink(here::here('leadrboard.RDS'))
 unlink(here::here('models_one'), recursive = TRUE)
 ```
 
-This vignette demonstrates advanced features of `leadr`, applied to building an ensemble.
+This vignette demonstrates how `leadr` improves the ensemble building workflow, and introduces some special ensemble building tools included in the package.
 
 ## Ensembles
 
-Ensembles come in two flavors^[Source: https://dnc1994.com/2016/05/rank-10-percent-in-first-kaggle-competition-en/]. The first idea is an averaging ensemble. 
+Let's talk about two ensemble types^[Source: https://dnc1994.com/2016/05/rank-10-percent-in-first-kaggle-competition-en/]. The first is the averaging ensemble. 
 
 ```{r fig.align='center', echo=FALSE}
 knitr::include_graphics("model averaging.png")
 ```
 
-A set of models make predictions, and you average the predictions (or possibly the classification probabilities).
+A set of models make predictions, and you average the predictions (or possibly the classification probabilities) to try to decrease the error. 
 
 Empirically, a better technique is blended or stacked ensembles:
 
@@ -42,13 +42,11 @@ Empirically, a better technique is blended or stacked ensembles:
 knitr::include_graphics("blended.png")
 ```
 
-Here, data is split into k-folds. The model is trained on k-1 folds, then evaluated on each holdout. Combined, each holdout set recovers the original data set. Therefore, the holdout predictions form the new ensemble feature. 
-
-`leadr` has some basic tools that help build these type of blended models. 
+Here, data is split into k-folds. The model is trained on each k-1 fold, and then evaluated on each holdout. Combined, each holdout set recovers the original data set. Then those holdout predictions are now a new feature to build included in an overall ensemble.
 
 ## The Task
 
-We will build an ensemble for the iris dataset, which is a multiclass classification dataset. Other packages such as [caretEnsemble](https://github.com/zachmayer/caretEnsemble) do not yet [support](https://github.com/zachmayer/caretEnsemble/pull/191) multiclass ensembles. `leadr` fills this niche nicely. 
+Let's build an ensemble for the iris dataset, which is a multiclass classification dataset. Other packages such as [caretEnsemble](https://github.com/zachmayer/caretEnsemble) do not yet [support](https://github.com/zachmayer/caretEnsemble/pull/191) multiclass ensembles, but `leadr` provides some tools to handle this situation.
 
 First, let's build a list of models.
 
@@ -99,9 +97,9 @@ board()
 
 We also want to evaluate the models that go into our ensemble. In general, we want to use two different criteria. 
 
-First, we want to maximize accuracy, as measured by the 5-fold cross-validation that we build our models on. Second, we want to minimize the prediction correlation. Suppose two sets of model predictions have similar accuracy scores, are not very correlated. This means that each model learned something different about the dataset, and would likely benefit from an ensemble. 
+First, we want to maximize accuracy, as measured by the 5-fold cross-validation that we build our models on. Second, we want to minimize the prediction correlation. Suppose two sets of model predictions have similar accuracy scores, but are not correlated. This means that each model learned something different about the dataset, and an ensemble could combine those different understandings. 
 
-`caret` offers some nice tools to see these criteria:
+Here are some `caret` functions to look at those criteria:
 
 ```{r}
 results <- resamples(models)
@@ -111,9 +109,9 @@ modelCor(results)
 splom(results)
 ```
 
-Some of our models are very correlated, which is to be expected for a simple data set.
+Some of our models are correlated, which is to be expected for a simple data set.
 
-The next step as described in the introductory diagram, is to create a new feature for each model from the out of fold predictions. `leadr` has a nice helper function for this:
+The next step as described in the introductory diagram, is to create a new feature for each model from the out of fold predictions. `leadr::oof_grab` does this automatically:
 
 ```{r}
 blended <- oof_grab(models)
@@ -132,6 +130,10 @@ Then we can add it to our leaderboard and see how it compares to the individual 
 ```{r}
 board(ensemble, dir = "ensembles")
 ```
+
+## Conclusions
+
+`leadr` provides some tools to help build the ensemble, as well as keeping track of the results. We can also use the `dir` argument of `leadr::board` to create natural groupings in the leaderboard, such as base models versus ensembles. 
 
 
 

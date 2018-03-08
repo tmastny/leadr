@@ -25,13 +25,11 @@ unlink(here::here('models_one'), recursive = TRUE)
 ```
 
 
-This vignette will show the basic `leadr` workflow. To see how `leadr` supports more advanced ensemble model building, check out my other vignette. 
+This vignette will show the basics of the `leadr` workflow. To see how `leadr` supports more advanced ensemble model building, check out my Ensembles [vignette](https://tmastny.github.io/leadr/articles/ensemble.html). 
 
-`leadr` is intended to be used within an R project for one dataset. Currently, the leaderboard works best placed at the project root, with any number of subdirectories to save the models.
+`leadr` is designed to create one leaderboard per R project per dataset. Currently, the leaderboard works best placed at the project root, with any number of subdirectories to save the models.
 
 ## Getting Started
-
-I usually start with these packages.
 
 ```{r}
 library(purrr)
@@ -52,7 +50,7 @@ models <- map(
 )
 ```
 
-We can also `purrr` the models into our leaderboard. This time we use `purrr::walk` since want to update the leaderboard, but don't care about the return value. 
+We can also `purrr` the models into our leaderboard. This time we use `purrr::walk` to update the leaderboard while returning quietly. 
 
 ```{r}
 walk(models, board)
@@ -61,11 +59,11 @@ board()
 
 By default, `board` saves the models into a folder at the root of the project called `models_one` and returns a tibble that provides us with everything we want to know about the model. 
 
-The tibble gives us the ranking and metric score, as well as lists like `tune`, `index`, and `seed` that allow us to exactly recreate the model. 
+The tibble gives us the ranking and metric score, as well as lists like `tune`, `index`, and `seeds` that allow us to exactly recreate the model. 
 
 ## Groups
 
-Of course, fitting four random forest models isn't very realistic. The idea is that we can fit many different types of models. Let's try a different type of model, using the same index as the first model:
+Of course, fitting four random forest models on the same dataset isn't very realistic. We'd like to fit a variety of models and compare the accuracy. Let's use the `index` column of the leaderboard to fit a new model on the same bootstrap resamples as the first model.
 
 ```{r}
 first_id <- which(board()$id == 1)
@@ -74,7 +72,7 @@ model <- train(Species ~ ., data = iris, method = 'glmnet', trControl = control)
 board(model)
 ```
 
-Fitting the model on the same bootstrap or cross-validation index allows us to compare models using some caret functions. The `group` column indicates which models are fit on the same index, and we'll use `leadr::to_list()` to covert the filtered leaderboard to a list of models.
+`caret` has a nice set of functions to compare models trained on the same bootstrap or cross-validation index. To find these comparable models, we can filter on the `group` column and use `leadr::to_list()` to convert the filtered leaderboard to a list of models.
 
 ```{r}
 group <- board() %>% 
@@ -82,7 +80,7 @@ group <- board() %>%
   to_list()
 ```
 
-From there, we can compare models using the `resamples` family of caret functions:
+From there, we can compare models using the `resamples` family of `caret` functions:
 
 ```{r, fig.align='center'}
 results <- resamples(group)
@@ -94,7 +92,7 @@ splom(results)
 
 ## Peaking
 
-`leadr` also has tools to help you find ranking of models as the leaderboard gets big. Let's add a few more models:
+`leadr` also has tools to help you evaluate model ranking as the leaderboard gets big. Let's add a few more models:
 
 ```{r}
 models <- map(
@@ -109,33 +107,32 @@ walk(models, board)
 board()
 ```
 
-We can no longer see every model on the leaderboard. That's where `leadr::peak` helps out. Let's look at the ranking of the first model:
+By default the `tibble` package prints at most 20 rows and only 10 rows for larger tibbles. With `leadr::peak`, we can peak at the ranking of the first model and those in the surrounding positions:
 
 ```{r}
 board() %>%
   peak(1)
 ```
 
-Often, we want to see how the model we just ran ranks:
+We also peak at the last model ran:
 
 ```{r}
 board() %>%
   peak(at_last())
 ```
 
-`leadr::peak` also takes a variable number of inputs. If we want to compare the last to the first model, it will return the smallest tibble that contains both. If it is under 20 rows, it will print the entire tibble.
+`leadr::peak` also takes a variable number of inputs. If we want to compare the last model to the first model, it will return the smallest tibble that contains both. If it is 20 rows or under, it will print the entire tibble.
 
 ```{r}
 board() %>%
   peak(at_last(), 1)
 ```
 
-Thanks to [pillar](https://github.com/r-lib/pillar) and [crayon](https://github.com/r-lib/crayon), `leadr::peak` also has special printing capabilities when used in a supported console. Here is an example of `peak` in the RStudio console. Notice that it highlights the peaked models in the output.
+Thanks to [pillar](https://github.com/r-lib/pillar) and [crayon](https://github.com/r-lib/crayon), `leadr::peak` also has special printing when used in a supported console. Here is an example of `peak` in the RStudio console. Notice that it highlights the peaked models in the console output.
 
 ```{r echo=FALSE, fig.align='center'}
 knitr::include_graphics("leadr_pic.png")
 ```
-
 
 
 
