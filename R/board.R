@@ -2,9 +2,9 @@
 #'
 #' This function updates and returns
 #' the model leaderboard for the project. Please read the
-#' \link{https://github.com/tmastny/leadr}[README] and the
+#' \href{https://github.com/tmastny/leadr}{README} and the
 #' introduction
-#' \link{https://tmastny.github.io/leadr/articles/introduction.html}[vignette].
+#' \href{https://tmastny.github.io/leadr/articles/introduction.html}{vignette}.
 #'
 #'
 #' @param model model to add to the leaderboard. If no model is supplied

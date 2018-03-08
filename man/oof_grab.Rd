@@ -22,7 +22,7 @@ n is the number of labels in the outcome.
 Given a model or list of models, this function returns the
 out of fold predictions. These out of fold predictions can be used
 to make stacked or blended ensembles. See the ensemble
-\link{https://tmastny.github.io/leadr/articles/ensemble.html}[vignette]
+\href{https://tmastny.github.io/leadr/articles/ensemble.html}{vignette}
 for examples.
 }
 \examples{
