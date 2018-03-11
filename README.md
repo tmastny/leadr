@@ -5,7 +5,7 @@ leadr
 
 The goal of leadr is to stream-line model organization in data science projects and Kaggle competitions. The main function `leadr::board` takes a [caret](https://github.com/topepo/caret) model and automatically builds a personal leaderboard for the entire project.
 
-This leaderboard allows you to easily sort models by metric (accuracy, RMSE, etc.) and ensures that you never lose track of a good model during interactive analysis.
+This leaderboard allows you to easily sort models by metric (accuracy, RMSE, etc.) and ensures that you never lose track of a good model during interactive analysis. Check out my [blog post](https://timmastny.rbind.io/blog/kaggle-contest-r-package/) for some background.
 
 Installation
 ------------
