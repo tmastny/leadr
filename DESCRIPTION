@@ -26,7 +26,8 @@ Imports:
     purrr,
     crayon,
     pillar,
-    here
+    here,
+    rlang
 Remotes: tidyverse/magrittr
 RoxygenNote: 6.0.1.9000
 VignetteBuilder: knitr

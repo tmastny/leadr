@@ -66,7 +66,7 @@ save_filter <- function(model) {
     column_names <- names(model$bestTune)
     column_values <- model$bestTune
     filtered <- model$pred %>%
-      dplyr::filter_(paste(column_names, "==", shQuote(column_values), collapse = "&"))
+      dplyr::filter(!! rlang::parse_expr(paste(column_names, "==", shQuote(column_values), collapse = "&")))
     return(filtered)
   }
   model$pred
