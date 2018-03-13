@@ -66,7 +66,7 @@ save_filter <- function(model) {
     column_names <- names(model$bestTune)
     column_values <- model$bestTune
     filtered <- model$pred %>%
-      dplyr::filter(!! rlang::parse_expr(paste(column_names, "==", shQuote(column_values), collapse = "&")))
+      dplyr::filter(!!rlang::parse_expr(paste(column_names, "==", shQuote(column_values), collapse = "&")))
     return(filtered)
   }
   model$pred
@@ -78,7 +78,7 @@ add_observed <- function(agg_data, model) {
   data <- save_filter(model)
   observed <- data$obs[orderer(data)]
   agg_data <- agg_data %>%
-    tibble::add_column(!!(outcome) := observed)
+    tibble::add_column(!!outcome := observed)
 }
 
 #' Convert (subset) of the leaderboard tibble to a list of models
