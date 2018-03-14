@@ -43,7 +43,6 @@ grabber <- function(model, type) {
   grab(pred_data, model)
 }
 
-# need to add warning if probabilities weren't saved
 prob_grabber <- function(data, model) {
   columns <- as.character(unique(model$trainingData$.outcome))
   if (all(!columns %in% names(data))) {
