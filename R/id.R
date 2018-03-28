@@ -24,7 +24,6 @@ c.id <- function(x, ...) {
 
 #' @export
 format.id <- function(x, ..., formatter = id_color) {
-  #x_highlight <- which(x == get_id())
   x_highlight <- x %in% get_id()
   set_id(NULL)
 
