@@ -4,8 +4,8 @@
 \alias{board}
 \title{A tibble leaderboard for \code{caret} \code{train} objects}
 \usage{
-board(model = NULL, path = NULL, dir = NULL, save = TRUE,
-  quiet = FALSE)
+board(model = NULL, path = here::here("models"), dir = "initial",
+  save = TRUE, quiet = FALSE)
 }
 \arguments{
 \item{model}{model to add to the leaderboard. If no model is supplied

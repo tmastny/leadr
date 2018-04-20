@@ -96,12 +96,19 @@ add_observed <- function(agg_data, model) {
 #'   to_list()
 #'
 #' @export
-to_list <- function(leadrboard) {
-  purrr::map2(leadrboard$id, leadrboard$dir, get_model)
+model_list <- function(leadrboard) {
+  purrr::pmap(
+    list(
+      leadrboard$path,
+      leadrboard$dir,
+      leadrboard$id
+    ),
+    get_model
+  )
 }
 
-get_model <- function(id, dir) {
-  model_dir <- here::here(dir)
+get_model <- function(path, dir, id) {
+  model_dir <- file.path(path, dir)
   if (!dir.exists(model_dir)) {
     warning("The directory ", dir, " does not exist. Returning NA.")
     return(NA)

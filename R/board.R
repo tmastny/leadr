@@ -48,42 +48,23 @@
 #' @importFrom magrittr %>%
 #' @export
 board <- function(
-  model = NULL, path = NULL, dir = NULL, save = TRUE, quiet = FALSE) {
-
-  default_dir = "models_one"
-
-  if (is.null(get_path()) || (!is.null(path))) {
-    if (is.null(path)) {
-      set_path(here::here())
-    } else {
-      set_path(path)
-    }
-  }
-  path = get_path()
-
-  if (is.null(get_dir()) || (!is.null(dir))) {
-    if (is.null(dir)) {
-      set_dir(default_dir)
-    } else {
-      set_dir(dir)
-    }
-  }
-  dir = get_dir()
+  model = NULL, path = here::here("models"), dir = "initial", save = TRUE,
+  quiet = FALSE) {
 
   leadrboard <- new_leadrboard()
-  leadrboard_path <- file.path(path, "leadrboard.RDS")
+  leadrboard_path <- here::here("leadrboard.RDS")
   if (file.exists(leadrboard_path))
     leadrboard <- readRDS(leadrboard_path)
 
   if (!is.null(model)) {
     model_id = nrow(leadrboard) + 1
-    leadrboard <- add_to(leadrboard, model, model_id, dir)
+    leadrboard <- add_to(leadrboard, model, model_id, dir, path)
     saveRDS(leadrboard, leadrboard_path)
 
     if (save) {
       model_path = file.path(path, dir)
       if (!dir.exists(model_path))
-        dir.create(model_path)
+        dir.create(model_path, recursive = TRUE)
 
       saveRDS(model, file.path(model_path, paste0("model", model_id, ".RDS")))
     }
@@ -109,11 +90,12 @@ new_leadrboard <- function() {
     group = integer(),
     index = list(),
     tune = list(),
-    seeds = list()
+    seeds = list(),
+    path = character()
   )
 }
 
-add_to <- function(leadrboard, model, id, dir) {
+add_to <- function(leadrboard, model, id, dir, path) {
   new_row = list()
   new_row$rank = 1
   new_row$id = id
@@ -129,6 +111,7 @@ add_to <- function(leadrboard, model, id, dir) {
     new_row$index = list(model$control$index)
     new_row$tune = list(as.list(model$bestTune))
     new_row$seeds = list(model$control$seeds)
+    new_row$path = path
   } else {
     stop("leadr only supports caret train objects (so far).")
   }
