@@ -97,15 +97,22 @@ add_observed <- function(agg_data, model) {
 #'
 #' @export
 model_list <- function(leadrboard) {
-  purrr::pmap(
-    list(
-      leadrboard$path,
-      leadrboard$dir,
-      leadrboard$id
-    ),
-    get_model
+  model_locations <- list(
+    leadrboard$path,
+    leadrboard$dir,
+    leadrboard$id
   )
+  models <- purrr::pmap(model_locations, get_model)
+
+  model_ids <- list(
+    leadrboard$model,
+    leadrboard$id
+  )
+  model_names <- purrr::pmap(model_ids, paste, sep = "_")
+  names(models) <- model_names
+  models
 }
+
 
 get_model <- function(path, dir, id) {
   model_dir <- file.path(path, dir)
