@@ -3,8 +3,12 @@ context("oof")
 library(caret)
 
 test_that("oof_grab works with one model or a list", {
-  m1 <- readRDS(here::here("models_one", "model1.RDS"))
-  m2 <- readRDS(here::here("models_one", "model2.RDS"))
+  models <- board() %>%
+    filter(id %in% c(1, 2)) %>%
+    model_list()
+
+  m1 <- models[[1]]
+  m2 <- models[[2]]
 
   m1_oof <- oof_grab(m1)
   listed_oof <- oof_grab(list(m1, m2))
@@ -14,26 +18,36 @@ test_that("oof_grab works with one model or a list", {
 })
 
 test_that("oof_grab returns identical outcomes as training data", {
-  m1 <- readRDS(here::here("models_one", "model1.RDS"))
-  m1_oof <- oof_grab(m1)
+  m1 <- board() %>%
+    filter(id == 1) %>%
+    model_list() %>%
+    .[[1]]
 
+  m1_oof <- oof_grab(m1)
   expect_identical(m1_oof$Species, iris$Species)
 })
 
 test_that("oof_grab handles probabilities", {
-  m1 <- readRDS(here::here("models_one", "model1.RDS"))
-  m1_oof <- oof_grab(m1, type = 'prob')
+  models <- board() %>%
+    filter(id %in% c(1, 2)) %>%
+    model_list()
 
+  m1 <- models[[1]]
+  m2 <- models[[2]]
+
+  m1_oof <- oof_grab(m1, type = 'prob')
   expect_equal(length(m1_oof), length(unique(iris$Species)) + 1)
 
-  m2 <- readRDS(here::here("models_one", "model2.RDS"))
   listed_oof <- oof_grab(list(m1, m2), type = 'prob')
-
   expect_equal(length(listed_oof), length(unique(iris$Species)) * 2 + 1)
 })
 
 test_that("oof_grab throws an error for invalid type", {
-  m1 <- readRDS(here::here("models_one", "model1.RDS"))
+  m1 <- board() %>%
+    filter(id == 1) %>%
+    model_list() %>%
+    .[[1]]
+
   expect_error(m1_oof(m1, type = "wrong_type"))
 })
 
