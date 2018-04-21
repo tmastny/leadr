@@ -39,7 +39,7 @@ grabber <- function(model, type) {
 
   if (is.null(grab)) stop("Not a valid type. Use raw or prob.")
 
-  pred_data <- save_filter(model)
+  pred_data <- tune_filter(model)
   grab(pred_data, model)
 }
 
@@ -60,26 +60,22 @@ orderer <- function(data) {
   order(data$rowIndex)
 }
 
-save_filter <- function(model) {
-  if (nrow(model$pred) != nrow(model$trainingData)) {
-    col_names <- names(model$bestTune)
-    col_values <- model$bestTune
-    filtered_pred <- model$pred %>%
-      dplyr::filter(
-        !!!purrr::map2(
-          col_names, col_values,
-          ~rlang::quo(!!rlang::sym(.x) == !!.y)
-          )
+tune_filter <- function(model) {
+  col_names <- names(model$bestTune)
+  col_values <- model$bestTune
+  filtered_pred <- model$pred %>%
+    dplyr::filter(
+      !!!purrr::map2(
+        col_names, col_values,
+        ~rlang::quo(!!rlang::sym(.x) == !!.y)
         )
-    return(filtered_pred)
-  }
-  model$pred
+      )
 }
 
 add_observed <- function(agg_data, model) {
   outcome <- attr(model$terms, "variables")[[2]]
 
-  data <- save_filter(model)
+  data <- tune_filter(model)
   observed <- data$obs[orderer(data)]
   agg_data <- agg_data %>%
     tibble::add_column(!!outcome := observed)
