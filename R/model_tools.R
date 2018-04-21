@@ -62,11 +62,16 @@ orderer <- function(data) {
 
 save_filter <- function(model) {
   if (nrow(model$pred) != nrow(model$trainingData)) {
-    column_names <- names(model$bestTune)
-    column_values <- model$bestTune
-    filtered <- model$pred %>%
-      dplyr::filter(!!rlang::parse_expr(paste(column_names, "==", shQuote(column_values), collapse = "&")))
-    return(filtered)
+    col_names <- names(model$bestTune)
+    col_values <- model$bestTune
+    filtered_pred <- model$pred %>%
+      dplyr::filter(
+        !!!purrr::map2(
+          col_names, col_values,
+          ~rlang::quo(!!rlang::sym(.x) == !!.y)
+          )
+        )
+    return(filtered_pred)
   }
   model$pred
 }
