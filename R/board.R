@@ -10,14 +10,13 @@
 #' @param model model to add to the leaderboard. If no model is supplied
 #' (the default \code{null}), \code{board} returns the leaderboard tibble
 #' for the project.
-#' @param path globally sets the path to save models and leaderboards. By
-#' default, the path is the project directory found by. For best results, the path
+#' @param path the path to the saved model directory. By
+#' default, the path is the project root. For best results, the path
 #' string should be constructed with \code{file.path} or
 #' \href{https://github.com/krlmlr/here}{\code{here::here()}}.
-#' @param dir globally sets name of directory where models are saved.
+#' @param dir the name of directory where the model is saved.
 #' This will be a subdirectory of the specified path. The default directory
-#' is named \code{models_one}. If no argument is supplied, the model will be saved
-#' in the previously specified directory. See the example below.
+#' is named \code{initial}. This is commonly used to group similar models.
 #' @param save whether \code{board} should save the supplied model to \code{dir}. If
 #' \code{FALSE} the model will not be saved, but will be added to the leaderboard.
 #' @param quiet whether \code{board} should return the leaderboard tibble to the console.
@@ -29,21 +28,16 @@
 #'
 #' @examples
 #' # add caret model to leaderboard
-#' # model saved to "models_one"
+#' # model saved to "file.path("models", "initial")"
 #' model <- train(...)
-#' leadr::board(model)
+#' board(model)
 #'
 #' # return tibble leaderboard
-#' leadr::board()
+#' board()
 #'
 #' # save to different directory
 #' ensemble <- train(...)
-#' leadr::board(ensemble, dir = "ensembles_one")
-#'
-#' # board automatically saves to previous directory
-#' # model saved to "ensembles_one"
-#' ensemble2 <- train(...)
-#' leadr::board(ensembles2)
+#' board(ensemble, dir = "ensembles")
 #'
 #' @importFrom magrittr %>%
 #' @export

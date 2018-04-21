@@ -16,7 +16,7 @@
 #' n is the number of labels in the outcome.
 #'
 #' @examples
-#' oofs <- oof_grab(model_list)
+#' oofs <- oof_grab(models)
 #'
 #' @importFrom magrittr %>%
 #' @export
@@ -81,20 +81,21 @@ add_observed <- function(agg_data, model) {
     tibble::add_column(!!outcome := observed)
 }
 
-#' Convert (subset) of the leaderboard tibble to a list of models
+#' Convert the leaderboard tibble to a list of models
 #'
 #' Given a possibly filtered leaderboard tibble from \code{\link{board}},
-#' \code{to_list} returns every model in a list.
+#' \code{model_list} returns every model in a list. Each entry in the
+#' list in named by the model method and id.
 #'
 #' @param leadrboard the leaderboard tibble, or a filtered verison of it
 #' from \code{\link{board}}
 #'
-#' @return a list of caret models (\code{train} objects)
+#' @return a named list of caret models (\code{train} objects)
 #'
 #' @examples
 #' model_list <- board() %>%
 #'   filter(group == 1) %>%
-#'   to_list()
+#'   model_list()
 #'
 #' @export
 model_list <- function(leadrboard) {

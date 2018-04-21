@@ -2,7 +2,7 @@
 % Please edit documentation in R/model_tools.R
 \name{model_list}
 \alias{model_list}
-\title{Convert (subset) of the leaderboard tibble to a list of models}
+\title{Convert the leaderboard tibble to a list of models}
 \usage{
 model_list(leadrboard)
 }
@@ -11,15 +11,16 @@ model_list(leadrboard)
 from \code{\link{board}}}
 }
 \value{
-a list of caret models (\code{train} objects)
+a named list of caret models (\code{train} objects)
 }
 \description{
 Given a possibly filtered leaderboard tibble from \code{\link{board}},
-\code{to_list} returns every model in a list.
+\code{model_list} returns every model in a list. Each entry in the
+list in named by the model method and id.
 }
 \examples{
 model_list <- board() \%>\%
   filter(group == 1) \%>\%
-  to_list()
+  model_list()
 
 }

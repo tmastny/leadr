@@ -26,6 +26,6 @@ to make stacked or blended ensembles. See the ensemble
 for examples.
 }
 \examples{
-oofs <- oof_grab(model_list)
+oofs <- oof_grab(models)
 
 }
