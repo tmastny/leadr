@@ -84,6 +84,8 @@ as_argument <- function(leadrboard) {
 #' @param modeler user created function that is a wrapper around
 #' caret \code{train}
 #'
+#' @param formula formula passed to caret \code{train} function
+#'
 #' @param data training data for the caret \code{train} function
 #'
 #' @param parameters parameters that go into the modeler wrapper. If
@@ -98,11 +100,11 @@ as_argument <- function(leadrboard) {
 #'   filter(id == 1) %>%
 #'   as_argument()
 #'
-#' run(modeler, data, parameters)
+#' run(modeler, Species ~ ., iris, parameters)
 #'
 #' @export
-run <- function(modeler, data, parameters) {
-  do.call(modeler, c(list(data = data), parameters))
+run <- function(modeler, formula, data, parameters) {
+  do.call(modeler, c(list(formula = formula, data = data), parameters))
 }
 
 #' Wrapper around caret \code{train}
@@ -126,16 +128,16 @@ run <- function(modeler, data, parameters) {
 #' @examples
 #' library(caret)
 #' library(leadr)
-#' modeler(iris, model = "rf")
+#' modeler(Species ~ ., iris, model = "rf")
 #'
 #' @export
-modeler <- function(data, method = "cv", num = 5,
+modeler <- function(formula, data, method = "cv", num = 5,
                     index = NULL, seeds = NA, model,
                     tune = NULL) {
   control <- trainControl(method = method, number = num,
                           savePredictions = 'final', index = index)
   train(
-    Species ~ .,
+    formula,
     data = data,
     method = model,
     trControl = control,

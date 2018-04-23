@@ -4,8 +4,8 @@
 \alias{modeler}
 \title{Wrapper around caret \code{train}}
 \usage{
-modeler(data, method = "cv", num = 5, index = NULL, seeds = NA, model,
-  tune = NULL)
+modeler(formula, data, method = "cv", num = 5, index = NULL, seeds = NA,
+  model, tune = NULL)
 }
 \value{
 a caret \code{train} object
@@ -29,6 +29,6 @@ caret is not a dependency of leadr.
 \examples{
 library(caret)
 library(leadr)
-modeler(iris, model = "rf")
+modeler(Species ~ ., iris, model = "rf")
 
 }

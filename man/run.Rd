@@ -4,11 +4,13 @@
 \alias{run}
 \title{Run function taking the model meta-data}
 \usage{
-run(modeler, data, parameters)
+run(modeler, formula, data, parameters)
 }
 \arguments{
 \item{modeler}{user created function that is a wrapper around
 caret \code{train}}
+
+\item{formula}{formula passed to caret \code{train} function}
 
 \item{data}{training data for the caret \code{train} function}
 
@@ -29,6 +31,6 @@ parameters <- board() \%>\%
   filter(id == 1) \%>\%
   as_argument()
 
-run(modeler, data, parameters)
+run(modeler, Species ~ ., iris, parameters)
 
 }
