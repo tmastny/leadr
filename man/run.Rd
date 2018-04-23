@@ -24,7 +24,7 @@ supplied, which should be a caret \code{train} object.
 }
 \description{
 Runs a function that takes a data to train on and a
-list of parameters.
+list of parameters. This is a wrapper around \code{\link{do.call}}.
 }
 \examples{
 parameters <- board() \%>\%

@@ -79,7 +79,7 @@ as_argument <- function(leadrboard) {
 #' Run function taking the model meta-data
 #'
 #' Runs a function that takes a data to train on and a
-#' list of parameters.
+#' list of parameters. This is a wrapper around \code{\link{do.call}}.
 #'
 #' @param modeler user created function that is a wrapper around
 #' caret \code{train}
