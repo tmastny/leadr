@@ -1,86 +1,3 @@
-#' Return out of fold model predictions
-#'
-#' Given a model or list of models, this function returns the
-#' out of fold predictions. These out of fold predictions can be used
-#' to make stacked or blended ensembles. See the ensemble
-#' \href{https://tmastny.github.io/leadr/articles/ensemble.html}{vignette}
-#' for examples.
-#'
-#' @param models A model or list of models to get the predictions
-#' @param type the results of the prediction. For classification models,
-#' \code{"raw"} returns the outcome label and \code{"prob"} returns the
-#' label probabilities.
-#'
-#' @return a tibble with one column per model and a column of the training data
-#' outcomes. If \code{type = "prob"} there will be n columns per model, where
-#' n is the number of labels in the outcome.
-#'
-#' @examples
-#' oofs <- oof_grab(models)
-#'
-#' @importFrom magrittr %>%
-#' @export
-oof_grab <- function(models, type = "raw") {
-  if (inherits(models, "train")) models <- list(models)
-
-  agg_data <- purrr::map_dfc(models, grabber, type)
-  agg_data <- agg_data %>% add_observed(models[[1]])
-  agg_data
-}
-
-grabber <- function(model, type) {
-
-  if (is.null(model$pred)) {
-    stop("Out of fold predictions were not saved in the caret model. ",
-         "Re-run with savePredictions = 'final' or TRUE in trainControl.")
-  }
-  grabbers <- list(raw = pred_grabber, prob = prob_grabber)
-  grab <- grabbers[[type]]
-
-  if (is.null(grab)) stop("Not a valid type. Use raw or prob.")
-
-  pred_data <- tune_filter(model)
-  grab(pred_data, model)
-}
-
-prob_grabber <- function(data, model) {
-  columns <- as.character(unique(model$trainingData$.outcome))
-  if (all(!columns %in% names(data))) {
-    stop("Probabilities were not saved, or are not available in the caret model. ",
-         "Re-run with classProbs = TRUE in trainControl.")
-  }
-  tibble::as_tibble(data[orderer(data), columns])
-}
-
-pred_grabber <- function(data, model) {
-  tibble::as_tibble(data$pred[orderer(data)])
-}
-
-orderer <- function(data) {
-  order(data$rowIndex)
-}
-
-tune_filter <- function(model) {
-  col_names <- names(model$bestTune)
-  col_values <- model$bestTune
-  filtered_pred <- model$pred %>%
-    dplyr::filter(
-      !!!purrr::map2(
-        col_names, col_values,
-        ~rlang::quo(!!rlang::sym(.x) == !!.y)
-        )
-      )
-}
-
-add_observed <- function(agg_data, model) {
-  outcome <- attr(model$terms, "variables")[[2]]
-
-  data <- tune_filter(model)
-  observed <- data$obs[orderer(data)]
-  agg_data <- agg_data %>%
-    tibble::add_column(!!outcome := observed)
-}
-
 #' Convert the leaderboard tibble to a list of models
 #'
 #' Given a possibly filtered leaderboard tibble from \code{\link{board}},
@@ -97,6 +14,7 @@ add_observed <- function(agg_data, model) {
 #'   filter(group == 1) %>%
 #'   model_list()
 #'
+#' @importFrom magrittr %>%
 #' @export
 model_list <- function(leadrboard) {
   model_locations <- list(
@@ -129,4 +47,98 @@ get_model <- function(path, dir, id) {
     return(NA)
   }
   readRDS(file_path)
+}
+
+#' Build list of model meta-data
+#'
+#' Extracts the model meta-data from \code{\link{board}} into a list.
+#' This data can be used to exactly reproduce the model. Can be passed
+#' to \code{\link{run}}.
+#'
+#' @param leadrboard the leaderboard tibble, or a filtered verison of it
+#' from \code{\link{board}}
+#'
+#' @return a named list of model meta-data that can be based to a function
+#' that builds a caret \code{train} model
+#'
+#' @examples
+#' parameters <- board() %>%
+#'   filter(id == 1) %>%
+#'   as_argument()
+#'
+#' run(modeler, data, parameters)
+#'
+#' @export
+as_argument <- function(leadrboard) {
+  leadrboard %>%
+    select(method, num, index, seeds, method, model, tune) %>%
+    as.list() %>%
+    purrr::map(~.[[1]])
+}
+
+#' Run function taking the model meta-data
+#'
+#' Runs a function that takes a data to train on and a
+#' list of parameters.
+#'
+#' @param modeler user created function that is a wrapper around
+#' caret \code{train}
+#'
+#' @param data training data for the caret \code{train} function
+#'
+#' @param parameters parameters that go into the modeler wrapper. If
+#' a previous model is being rerun, use \code{\link{as_argument}}
+#' to extract model meta-data from the \code{\link{board}}
+#'
+#' @return returns the return value of the \code{modeler} function
+#' supplied, which should be a caret \code{train} object.
+#'
+#' @examples
+#' parameters <- board() %>%
+#'   filter(id == 1) %>%
+#'   as_argument()
+#'
+#' run(modeler, data, parameters)
+#'
+#' @export
+run <- function(modeler, data, parameters) {
+  do.call(modeler, c(list(data = data), parameters))
+}
+
+#' Wrapper around caret \code{train}
+#'
+#' This is a wrapper around caret \code{train} that accepts the
+#' model meta-data from \code{\link{board}}. This function is used
+#' to exactly reproduce models in the leader board, or run
+#' new models.
+#'
+#' The parameters correspond to the arguments in caret's
+#' \code{trainControl} and \code{train} functions.
+#'
+#' The source code for this function is also an example how to
+#' create your own modeler function for your own needs.
+#'
+#' Note: you must manually load the caret package to use this function.
+#' caret is not a dependency of leadr.
+#'
+#' @return a caret \code{train} object
+#'
+#' @examples
+#' library(caret)
+#' library(leadr)
+#' modeler(iris, model = "rf")
+#'
+#' @export
+modeler <- function(data, method = "cv", num = 5,
+                    index = NULL, seeds = NA, model,
+                    tune = NULL) {
+  control <- trainControl(method = method, number = num,
+                          savePredictions = 'final', index = index)
+  train(
+    Species ~ .,
+    data = data,
+    method = model,
+    trControl = control,
+    tuneGrid = tune
+  )
 }

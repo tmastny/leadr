@@ -103,7 +103,7 @@ add_to <- function(leadrboard, model, id, dir, path) {
     new_row$num = model$control$number
     new_row$group = NA
     new_row$index = list(model$control$index)
-    new_row$tune = list(as.list(model$bestTune))
+    new_row$tune = list(model$bestTune)
     new_row$seeds = list(model$control$seeds)
     new_row$path = path
   } else {
