@@ -19,9 +19,9 @@
 #' is named \code{initial}. This is commonly used to group similar models.
 #' @param save whether \code{board} should save the supplied model to \code{dir}. If
 #' \code{FALSE} the model will not be saved, but will be added to the leaderboard.
-#' @param quiet whether \code{board} should return the leaderboard tibble to the console.
-#' By default \code{quiet = FALSE} means that the tibble prints to console.
-#' \code{quiet = TRUE} is useful in a \code{.Rmd} environment, where you want to add
+#' @param invisible whether \code{board} should return the leaderboard tibble to the console.
+#' By default \code{invisible = FALSE} means that the tibble prints to console.
+#' \code{invisible = TRUE} is useful in a \code{.Rmd} environment, where you want to add
 #' the model to the leaderboard without printing the tibble.
 #'
 #' @return \code{tibble} containing the most up-to-date leaderboard.
@@ -43,7 +43,7 @@
 #' @export
 board <- function(
   model = NULL, path = here::here("models"), dir = "initial", save = TRUE,
-  quiet = FALSE) {
+  invisible = FALSE) {
 
   leadrboard <- new_leadrboard()
   leadrboard_path <- here::here("leadrboard.RDS")
@@ -64,7 +64,7 @@ board <- function(
     }
   }
 
-  if (quiet) return(invisible(leadrboard))
+  if (invisible) return(base::invisible(leadrboard))
 
   leadrboard$id <- id(leadrboard$id)
   leadrboard

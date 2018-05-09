@@ -5,7 +5,7 @@
 \title{A tibble leaderboard for \code{caret} \code{train} objects}
 \usage{
 board(model = NULL, path = here::here("models"), dir = "initial",
-  save = TRUE, quiet = FALSE)
+  save = TRUE, invisible = FALSE)
 }
 \arguments{
 \item{model}{model to add to the leaderboard. If no model is supplied
@@ -24,9 +24,9 @@ is named \code{initial}. This is commonly used to group similar models.}
 \item{save}{whether \code{board} should save the supplied model to \code{dir}. If
 \code{FALSE} the model will not be saved, but will be added to the leaderboard.}
 
-\item{quiet}{whether \code{board} should return the leaderboard tibble to the console.
-By default \code{quiet = FALSE} means that the tibble prints to console.
-\code{quiet = TRUE} is useful in a \code{.Rmd} environment, where you want to add
+\item{invisible}{whether \code{board} should return the leaderboard tibble to the console.
+By default \code{invisible = FALSE} means that the tibble prints to console.
+\code{invisible = TRUE} is useful in a \code{.Rmd} environment, where you want to add
 the model to the leaderboard without printing the tibble.}
 }
 \value{
