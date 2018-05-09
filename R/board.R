@@ -1,7 +1,9 @@
 #' A tibble leaderboard for \code{caret} \code{train} objects
 #'
 #' This function updates and returns
-#' the model leaderboard for the project. Please read the
+#' the model leaderboard for the project. The function also saves a leaderboard
+#' tibble in the current working directory and models to a subdirectory.
+#' Please read the
 #' \href{https://github.com/tmastny/leadr}{README} and the
 #' introduction
 #' \href{https://tmastny.github.io/leadr/articles/introduction.html}{vignette}.
@@ -10,9 +12,9 @@
 #' @param model model to add to the leaderboard. If no model is supplied
 #' (the default \code{null}), \code{board} returns the leaderboard tibble
 #' for the project.
-#' @param path the path to the saved model directory. By
-#' default, the path is the project root. For best results, the path
-#' string should be constructed with \code{file.path} or
+#' @param path the path to the saved model directory. The default path
+#' is to a folder called \code{models} in the current working directory.
+#' For best results, the path string should be constructed with \code{file.path} or
 #' \href{https://github.com/krlmlr/here}{\code{here::here()}}.
 #' @param dir the name of directory where the model is saved.
 #' This will be a subdirectory of the specified path. The default directory
@@ -24,11 +26,12 @@
 #' \code{invisible = TRUE} is useful in a \code{.Rmd} environment, where you want to add
 #' the model to the leaderboard without printing the tibble.
 #'
-#' @return \code{tibble} containing the most up-to-date leaderboard.
+#' @return \code{tibble} containing the most up-to-date leaderboard. Also has the
+#' side-effects of creating and/or saving \code{leadrboard.RDS} to the current
+#' working directory, and saving the supplied model to the subdirectory.
 #'
 #' @examples
 #' # add caret model to leaderboard
-#' # model saved to "file.path("models", "initial")"
 #' model <- train(...)
 #' board(model)
 #'
@@ -42,11 +45,11 @@
 #' @importFrom magrittr %>%
 #' @export
 board <- function(
-  model = NULL, path = here::here("models"), dir = "initial", save = TRUE,
-  invisible = FALSE) {
+  model = NULL, path = file.path(getwd(), "models"), dir = "initial",
+  save = TRUE, invisible = FALSE) {
 
   leadrboard <- new_leadrboard()
-  leadrboard_path <- here::here("leadrboard.RDS")
+  leadrboard_path <- file.path(getwd(), "leadrboard.RDS")
   if (file.exists(leadrboard_path))
     leadrboard <- readRDS(leadrboard_path)
 

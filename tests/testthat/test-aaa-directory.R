@@ -22,7 +22,7 @@ test_that("board can save models to a different directory", {
 })
 
 test_that("board can have model directory in non-root folder", {
-  not_root <- here::here("not_root_dir")
+  not_root <- file.path(getwd(), "not_root_dir")
   new_path <- file.path(not_root, "new_models")
 
   model <- train(Species ~ ., data = iris, method = 'rf')

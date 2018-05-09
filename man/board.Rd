@@ -4,7 +4,7 @@
 \alias{board}
 \title{A tibble leaderboard for \code{caret} \code{train} objects}
 \usage{
-board(model = NULL, path = here::here("models"), dir = "initial",
+board(model = NULL, path = file.path(getwd(), "models"), dir = "initial",
   save = TRUE, invisible = FALSE)
 }
 \arguments{
@@ -12,9 +12,9 @@ board(model = NULL, path = here::here("models"), dir = "initial",
 (the default \code{null}), \code{board} returns the leaderboard tibble
 for the project.}
 
-\item{path}{the path to the saved model directory. By
-default, the path is the project root. For best results, the path
-string should be constructed with \code{file.path} or
+\item{path}{the path to the saved model directory. The default path
+is to a folder called \code{models} in the current working directory.
+For best results, the path string should be constructed with \code{file.path} or
 \href{https://github.com/krlmlr/here}{\code{here::here()}}.}
 
 \item{dir}{the name of directory where the model is saved.
@@ -30,18 +30,21 @@ By default \code{invisible = FALSE} means that the tibble prints to console.
 the model to the leaderboard without printing the tibble.}
 }
 \value{
-\code{tibble} containing the most up-to-date leaderboard.
+\code{tibble} containing the most up-to-date leaderboard. Also has the
+side-effects of creating and/or saving \code{leadrboard.RDS} to the current
+working directory, and saving the supplied model to the subdirectory.
 }
 \description{
 This function updates and returns
-the model leaderboard for the project. Please read the
+the model leaderboard for the project. The function also saves a leaderboard
+tibble in the current working directory and models to a subdirectory.
+Please read the
 \href{https://github.com/tmastny/leadr}{README} and the
 introduction
 \href{https://tmastny.github.io/leadr/articles/introduction.html}{vignette}.
 }
 \examples{
 # add caret model to leaderboard
-# model saved to "file.path("models", "initial")"
 model <- train(...)
 board(model)
 
