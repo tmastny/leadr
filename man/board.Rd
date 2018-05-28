@@ -4,58 +4,55 @@
 \alias{board}
 \title{A tibble leaderboard for \code{caret} \code{train} objects}
 \usage{
-board(model = NULL, path = NULL, dir = NULL, save = TRUE,
-  quiet = FALSE)
+board(model = NULL, path = file.path(getwd(), "models"), dir = "initial",
+  save = TRUE, invisible = FALSE)
 }
 \arguments{
 \item{model}{model to add to the leaderboard. If no model is supplied
 (the default \code{null}), \code{board} returns the leaderboard tibble
 for the project.}
 
-\item{path}{globally sets the path to save models and leaderboards. By
-default, the path is the project directory found by. For best results, the path
-string should be constructed with \code{file.path} or
+\item{path}{the path to the saved model directory. The default path
+is to a folder called \code{models} in the current working directory.
+For best results, the path string should be constructed with \code{file.path} or
 \href{https://github.com/krlmlr/here}{\code{here::here()}}.}
 
-\item{dir}{globally sets name of directory where models are saved.
+\item{dir}{the name of directory where the model is saved.
 This will be a subdirectory of the specified path. The default directory
-is named \code{models_one}. If no argument is supplied, the model will be saved
-in the previously specified directory. See the example below.}
+is named \code{initial}. This is commonly used to group similar models.}
 
 \item{save}{whether \code{board} should save the supplied model to \code{dir}. If
 \code{FALSE} the model will not be saved, but will be added to the leaderboard.}
 
-\item{quiet}{whether \code{board} should return the leaderboard tibble to the console.
-By default \code{quiet = FALSE} means that the tibble prints to console.
-\code{quiet = TRUE} is useful in a \code{.Rmd} environment, where you want to add
+\item{invisible}{whether \code{board} should return the leaderboard tibble to the console.
+By default \code{invisible = FALSE} means that the tibble prints to console.
+\code{invisible = TRUE} is useful in a \code{.Rmd} environment, where you want to add
 the model to the leaderboard without printing the tibble.}
 }
 \value{
-\code{tibble} containing the most up-to-date leaderboard.
+\code{tibble} containing the most up-to-date leaderboard. Also has the
+side-effects of creating and/or saving \code{leadrboard.RDS} to the current
+working directory, and saving the supplied model to the subdirectory.
 }
 \description{
 This function updates and returns
-the model leaderboard for the project. Please read the
+the model leaderboard for the project. The function also saves a leaderboard
+tibble in the current working directory and models to a subdirectory.
+Please read the
 \href{https://github.com/tmastny/leadr}{README} and the
 introduction
 \href{https://tmastny.github.io/leadr/articles/introduction.html}{vignette}.
 }
 \examples{
 # add caret model to leaderboard
-# model saved to "models_one"
 model <- train(...)
-leadr::board(model)
+board(model)
 
 # return tibble leaderboard
-leadr::board()
+board()
 
 # save to different directory
 ensemble <- train(...)
-leadr::board(ensemble, dir = "ensembles_one")
-
-# board automatically saves to previous directory
-# model saved to "ensembles_one"
-ensemble2 <- train(...)
-leadr::board(ensembles2)
+board(ensemble, dir = "ensembles")
 
 }

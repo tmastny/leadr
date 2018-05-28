@@ -101,7 +101,7 @@ return_pos <- function(models, id, window_size = 10, place) {
 #' @export
 at_last <- function(number = 1) {
   number <- 1:number
-  load_path <- file.path(get_path(), "leadrboard.RDS")
+  load_path <- file.path(getwd(), "leadrboard.RDS")
   nrow(readRDS(load_path)) - number + 1
 }
 

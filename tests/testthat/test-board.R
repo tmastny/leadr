@@ -5,8 +5,8 @@ library(caret)
 test_that("Model is saved to directory", {
   skip_if_not_installed('randomForest')
 
-  unlink(here::here("models_one"), recursive = TRUE)
-  unlink(here::here("leadrboard.RDS"))
+  unlink(file.path(getwd(), "models"), recursive = TRUE)
+  unlink(file.path(getwd(),"leadrboard.RDS"))
 
   control <- trainControl(
     method = "cv",
@@ -23,10 +23,18 @@ test_that("Model is saved to directory", {
     trControl = control
   )
 
-  leadr::board(model)
+  board(model)
 
-  expect_true(file.exists(here::here("leadrboard.RDS")))
-  expect_true(file.exists(here::here("models_one", "model1.RDS")))
+  expect_true(file.exists(file.path(getwd(), "leadrboard.RDS")))
+
+  path_dir <- board() %>%
+    filter(id == at_last()) %>%
+    select(path, dir) %>%
+    unlist(., use.names = FALSE)
+
+  path_to_model <- file.path(path_dir[1], path_dir[2],
+                             paste0("model", at_last(), ".RDS"))
+  expect_true(file.exists(path_to_model))
 })
 
 test_that("Next model", {
@@ -47,10 +55,18 @@ test_that("Next model", {
     trControl = control
   )
 
-  leadr::board(model)
+  board(model)
 
-  expect_true(file.exists(here::here("leadrboard.RDS")))
-  expect_true(file.exists(here::here("models_one", "model2.RDS")))
+  expect_true(file.exists(file.path(getwd(), "leadrboard.RDS")))
+
+  path_dir <- board() %>%
+    filter(id == at_last()) %>%
+    select(path, dir) %>%
+    unlist(., use.names = FALSE)
+
+  path_to_model <- file.path(path_dir[1], path_dir[2],
+                             paste0("model", at_last(), ".RDS"))
+  expect_true(file.exists(path_to_model))
 })
 
 

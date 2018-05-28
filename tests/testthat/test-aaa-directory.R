@@ -1,6 +1,7 @@
 context("directory")
 
 library(caret)
+library(dplyr)
 
 test_that("board can save models to a different directory", {
   directory = "model_test"
@@ -8,69 +9,35 @@ test_that("board can save models to a different directory", {
   model <- train(Species ~ ., data = iris, method = 'rf')
   board(model, dir = directory)
 
-  dir_path = here::here(directory)
-  expect_true(dir.exists(dir_path))
+  model_root <- board() %>%
+    filter(id == at_last()) %>%
+    .$path
 
-  path_to_file <- file.path(dir_path, "model1.RDS")
-  expect_true(file.exists(path_to_file))
-})
+  model_dir <- file.path(model_root, directory)
+  expect_true(dir.exists(model_dir))
 
-test_that("board automatically saved to previous directory", {
-  model <- train(Species ~ ., data = iris, method = 'rf')
-  board(model)
-
-  directory = "model_test"
-  dir_path = here::here(directory)
-  path_to_file <- file.path(dir_path, "model2.RDS")
-  expect_true(file.exists(path_to_file))
-
-  unlink(dir_path, recursive = TRUE)
-  unlink(file.path(here::here(), "leadrboard.RDS"))
-})
-
-test_that("board leaderboard can exist in subdirectory of root", {
-  # clean up
-  leadr:::set_path(NULL)
-  leadr:::set_dir(NULL)
-
-  new_sub <- "new_sub"
-  new_path <- here::here(new_sub)
-  dir.create(new_path)
-
-  model <- train(Species ~ ., data = iris, method = 'rf')
-  board(model, new_path)
-
-  leadrboard_path <- file.path(new_path, "leadrboard.RDS")
-  expect_true(file.exists(leadrboard_path))
-
-  path_to_model <- file.path(new_path, "models_one", "model1.RDS")
+  model_name <- paste0("model", at_last(), ".RDS")
+  path_to_model <- file.path(model_dir, model_name)
   expect_true(file.exists(path_to_model))
 })
 
-test_that("board saves model to previous path", {
-  model <- train(Species ~ ., data = iris, method = 'rf')
-  board(model)
-
-  new_sub <- "new_sub"
-  new_path <- here::here(new_sub)
-  path_to_model <- file.path(new_path, "models_one", "model2.RDS")
-  expect_true(file.exists(path_to_model))
-})
-
-test_that("board can add new folder to new path", {
-  new_dir = "new_dir"
+test_that("board can have model directory in non-root folder", {
+  not_root <- file.path(getwd(), "not_root_dir")
+  new_path <- file.path(not_root, "new_models")
 
   model <- train(Species ~ ., data = iris, method = 'rf')
-  board(model, dir = new_dir)
+  board(model, path = new_path)
 
-  new_sub <- "new_sub"
-  new_path <- here::here(new_sub)
-  path_to_model <- file.path(new_path, new_dir, "model3.RDS")
+  saved_path <- board() %>%
+    filter(id == at_last()) %>%
+    .$path
+  expect_equal(saved_path, new_path)
+
+  model_name <- paste0("model", at_last(), ".RDS")
+  path_to_model <- file.path(new_path, "initial", model_name)
   expect_true(file.exists(path_to_model))
 
-  unlink(new_path, recursive = TRUE)
-  leadr:::set_path(NULL)
-  leadr:::set_dir(NULL)
+  unlink(not_root, recursive = TRUE)
 })
 
 

@@ -53,10 +53,11 @@ leadr::board(model)
     .
     ├── iris.Rproj
     ├── leadrboard.RDS
-    └── models_one
-        └── model1.RDS
+    └── models
+        └── initial
+            └── model1.RDS
 
-At the project root, `board` saves the leaderboard tibble as a `.RDS` file and creates a subdirectory (named `/models_one` by default) to save all the models. All future models passed to `board` will be added to the leaderboard and saved in the directory, unless otherwise specified.
+By default, `board` saves the leaderboard tibble as a `.RDS` file at the project root and creates a directory `models`. Within `models`, each `caret` model is saved in a subdirectory and named in the order they were ran.
 
 Interactive
 -----------
